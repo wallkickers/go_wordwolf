@@ -16,6 +16,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 func lineHandler(w http.ResponseWriter, r *http.Request) {
     bot, err := linebot.New(
+        // TODO: 開発者のLINEアカウントごとに変更する必要あり
         "ae5b824deb86c7caff7f9c3a8098fb9c",
         "6PK3v2YKfi+bAxCV7scReyKDvR0YRyBONhbjLSPOEnTc52VcrpMYvItJu6/yWF+UKwY8/DVQ/OBNfV7cs/fc57Bj9IojD1818zyte6dtrXDc1JV/BQeJmJX+mAVlCf1WqKqx6QMeZLPad90vPndRiAdB04t89/1O/w1cDnyilFU=",
     )
@@ -44,16 +45,6 @@ func lineHandler(w http.ResponseWriter, r *http.Request) {
                 if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(replyMessage)).Do(); err != nil {
                     log.Print(err)
                 }
-            // case *linebot.StickerMessage:
-            //     replyMessage := fmt.Sprintf(
-            //         // ↓vindになる。%xにカンマ区切りで記載した順で入る。
-            //         "sticker id is %s, stickerResourceType is %s", message.StickerID, message.StickerResourceType
-            //     )
-
-            //     // エラー処理
-            //     if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(replyMessage)).Do(); err != nil {
-            //         log.Print(err)
-            //     }
             }
         }
     }
@@ -62,7 +53,7 @@ func lineHandler(w http.ResponseWriter, r *http.Request) {
 func main() {
     port, _ := strconv.Atoi(os.Args[1])
     fmt.Printf("Starting server at Port %d", port)
-    http.HandleFunc("/", handler) // / にリクエストが来た時はhandlerを呼ぶ。→ Hellop world
+    http.HandleFunc("/", handler) // / にリクエストが来た時はhandlerを呼ぶ。→ Hello world
     http.HandleFunc("/callback", lineHandler) // /callbackにリクエストが来た時にlineHandlerを呼ぶ
     http.ListenAndServe(fmt.Sprintf(":%d", port), nil)
 }
