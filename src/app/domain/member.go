@@ -32,7 +32,6 @@ func (m *Member) GetAccountName() string {
 type MemberAction interface {
     JoinGame(id, groupId) error
     LeaveGame(id, groupId) error
-    StartTalk(id, groupId) error
     Vote(id, groupId, id) error
     ConfirmTheme(id, groupId) error
 }
