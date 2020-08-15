@@ -1,34 +1,35 @@
 package domain
 
-type GameMember struct {
+type GameMaster struct {
 	groupId int
 	accountList []int
 	themeManagement map[int]string
 	voteManagement map[int]int
-	startTime time
-	talkTime　time
+	startTime time.Time
+	talkTime　time.Time
 }
 
-func NewGameMember(groupId int) *GameMember {
-	return &GameMember{
-		groupId: groupId
+func NewGameMaster(groupId int) *GameMaster {
+	return &GameMaster{
+		groupId: groupId,
 	}
 }
 
-func (g *GameMember) GetGroupId() int {
+func (g *GameMaster) GetGroupId() int {
 	return g.groupId
 }
 
-func (g *GameMember) SetTalkTime(time) {
+func (g *GameMaster) SetTalkTime(time) {
 	g.talktime = time
 }
 
 // インターフェイス
-type GameMemberAction interface {
-	AssignTheme(id int) error
-	StartToMesureTime() error
-	GetLimitTime() error
-	GetResult() error
-	AddMember(id) error
+type GameMasterAction interface {
+	AssignTheme(groupId int) error
+	StartTalk(groupId int) error
+	StartToMesureTime(groupId int) error
+	GetLimitTime(groupId int) error
+	GetResult(groupId int) error
+	AddMember(id, groupId int) error
 	ManageVote(id, id) error
 }
