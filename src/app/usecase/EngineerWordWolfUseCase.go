@@ -1,12 +1,14 @@
+package usecase
+
 type EngineerWordWolfUseCase struct {
 	memberAction *MemberAction
 	gameMasterAction *GameMasterAction
 }
 
-func NewEngineerWordWolfUseCase(MemberAction MemberAction,GameMasterAction GameMasterAction) *EngineerWordWolfUseCase{
-	return $EngineerWordWolfUseCase {
-		MemberAction: MemberAction,
-		GameMasterAction: GameMasterAction
+func NewEngineerWordWolfUseCase(memberAction MemberAction,gameMasterAction GameMasterAction) *EngineerWordWolfUseCase{
+	return &EngineerWordWolfUseCase {
+		MemberAction: memberAction,
+		GameMasterAction: gameMasterAction,
 	}
 }
 
@@ -30,13 +32,13 @@ func (u *EngineerWordWolfUseCase) startGame(groupId int) error {
 
 // トークを開始する
 func (u *EngineerWordWolfUseCase) startTalk(groupId int) error {
-	result, err := gameMasterAction.StartTalk(groupId)
-	if err != nil {
-		return err
+	errStart := gameMasterAction.StartTalk(groupId)
+	if errStart != nil {
+		return errStart
 	}
-	result, err := gameMasterAction.StartToMesureTime(groupId)
-	if err != nil {
-		return err
+	errMesure := gameMasterAction.StartToMesureTime(groupId)
+	if errMesure != nil {
+		return errMesure
 	}
 	result, err := gameMasterAction.GetLimitTime(groupId)
 	if err != nil {
@@ -46,12 +48,12 @@ func (u *EngineerWordWolfUseCase) startTalk(groupId int) error {
 }
 
 // 残り時間を表示する
-func (u *EngineerWordWolfUseCase) showRemainingTime(groupId int) (string,error) {
+func (u *EngineerWordWolfUseCase) showRemainingTime(groupId int) (string, error) {
 	result, err := gameMasterAction.GetLimitTime(groupId)
 	if err != nil {
-		return (nil,err)
+		return nil, err
 	}
-	return (result,nil)
+	return result, nil
 }
 
 // 投票を受け付ける

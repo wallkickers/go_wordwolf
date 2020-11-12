@@ -1,17 +1,17 @@
 package domain
 
 type Member struct {
-    id        int
-    groupId int
-    accountName string
+	id          int
+	groupId     int
+	accountName string
 }
 
 type Members []Member
 
 func NewMember(id, groupId int, accountName string) *Member {
 	return &Member{
-		id:    id,
-		groupId: groupId,
+		id:          id,
+		groupId:     groupId,
 		accountName: accountName,
 	}
 }
@@ -30,8 +30,8 @@ func (m *Member) GetAccountName() string {
 
 // インターフェイス
 type MemberAction interface {
-    JoinGame(id, groupId) error
-    LeaveGame(id, groupId) error
-    Vote(id, groupId, id) error
-    ConfirmTheme(id, groupId) error
+	JoinGame(id int, groupId int) error
+	LeaveGame(id int, groupId int) error
+	Vote(id int, groupId int, voteForId int) error
+	ConfirmTheme(id int, groupId int) error
 }
