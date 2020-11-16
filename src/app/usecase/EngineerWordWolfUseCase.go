@@ -1,20 +1,24 @@
 package usecase
 
+import (
+	. "github.com/takuyaaaaaaahaaaaaa/go_wordwolf/src/app/domain"
+)
+
 type EngineerWordWolfUseCase struct {
-	memberAction *MemberAction
-	gameMasterAction *GameMasterAction
+	memberAction     MemberAction
+	gameMasterAction GameMasterAction
 }
 
-func NewEngineerWordWolfUseCase(memberAction MemberAction,gameMasterAction GameMasterAction) *EngineerWordWolfUseCase{
-	return &EngineerWordWolfUseCase {
-		MemberAction: memberAction,
-		GameMasterAction: gameMasterAction,
+func NewEngineerWordWolfUseCase(memberAction MemberAction, gameMasterAction GameMasterAction) *EngineerWordWolfUseCase {
+	return &EngineerWordWolfUseCase{
+		memberAction:     memberAction,
+		gameMasterAction: gameMasterAction,
 	}
 }
 
 // ゲームに参加する
 func (u *EngineerWordWolfUseCase) joinGame(id int, groupId int) error {
-	result, err := memberAction.JoinGame(id, groupId)
+	err := u.memberAction.JoinGame(id, groupId)
 	if err != nil {
 		return err
 	}
@@ -23,7 +27,7 @@ func (u *EngineerWordWolfUseCase) joinGame(id int, groupId int) error {
 
 // 参加者を打ち切り、お題を割り振る
 func (u *EngineerWordWolfUseCase) startGame(groupId int) error {
-	result, err := gameMasterAction.AssignTheme(groupId)
+	result, err := u.gameMasterAction.AssignTheme(groupId)
 	if err != nil {
 		return err
 	}
@@ -71,5 +75,5 @@ func (u *EngineerWordWolfUseCase) displayResult(groupId int) error {
 	if err != nil {
 		return err
 	}
- 	return nil
+	return nil
 }
