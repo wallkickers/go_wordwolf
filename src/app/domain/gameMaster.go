@@ -7,70 +7,65 @@ import (
 
 // GameMaster はゲーム管理者を表す
 type GameMaster struct {
-	// LINEグループID
-	groupID int
+	// グループID
+	groupID string
 	// 参加メンバーリスト
-	memberList map[int]bool
-	// 各メンバーのお題リスト
-	themeManagement map[int]string
-	// 各メンバーの投票先
-	voteManagement map[int]int
+	memberList map[string]bool
+	// 各メンバーのお題リスト([参加メンバー]お題)
+	themeManagement map[string]string
+	// 各メンバーの投票先([投票元]投票先)
+	voteManagement map[string]string
 	// ゲームプレイ時間
 	talkTimeMin time.Time
 	// ゲーム終了時刻
 	endTime time.Time
 }
 
-// NewGameMaster GameMasterのインスタンスを新規作成する
-func NewGameMaster(groupID int) *GameMaster {
+// NewGameMaster ゲーム管理者インスタンスを新規作成する
+func NewGameMaster(groupID string) *GameMaster {
 	return &GameMaster{
 		groupID: groupID,
 	}
 }
 
 // GroupID グループIDを取得する
-func (g *GameMaster) GroupID() int {
+func (g *GameMaster) GroupID() string {
 	return g.groupID
 }
 
-// SetGroupID グループIDを設定する
-func (g *GameMaster) SetGroupID(groupID int) {
-	g.groupID = groupID
-}
-
 // MemberList 参加メンバーリストを取得する
-func (g *GameMaster) MemberList() map[int]bool {
+func (g *GameMaster) MemberList() map[string]bool {
 	return g.memberList
 }
 
 // SetMember 参加メンバーを設定する
-func (g *GameMaster) SetMember(member int) {
-	g.memberList[member] = true
+func (g *GameMaster) SetMember(memberID string) {
+	g.memberList[memberID] = true
 }
 
 // DeleteMember 離脱メンバーを設定する
-func (g *GameMaster) DeleteMember(member int) {
-	delete(g.memberList, member)
+func (g *GameMaster) DeleteMember(memberID string) {
+	delete(g.memberList, memberID)
 }
 
 // ThemeManagement 各メンバーのお題リストを取得する
-func (g *GameMaster) ThemeManagement() map[int]string {
+func (g *GameMaster) ThemeManagement() map[string]string {
 	return g.themeManagement
 }
 
 // SetThemeManagement 各メンバーのお題リストを設定する
-func (g *GameMaster) SetThemeManagement(themeManagement map[int]string) {
+func (g *GameMaster) SetThemeManagement(themeManagement map[string]string) {
 	g.themeManagement = themeManagement
 }
 
-// VoteManagement 各メンバーの投票先を取得する
-func (g *GameMaster) VoteManagement() map[int]int {
+// VoteManagement 各メンバーの投票先を取得する([投票元]投票先)
+func (g *GameMaster) VoteManagement() map[string]string {
 	return g.voteManagement
 }
 
 // SetVoteManagement 各メンバーの投票先を設定する
-func (g *GameMaster) SetVoteManagement(fromMember int, toMember int) {
-	g.voteManagement[fromMember] = toMember
+func (g *GameMaster) SetVoteManagement(fromMemberID string, toMemberID string) {
+	g.voteManagement[fromMemberID] = toMemberID
 }
 
 // TalkTimeMin ゲームプレイ時間(分)を取得する
@@ -93,12 +88,7 @@ func (g *GameMaster) SetEndTime(endTime time.Time) {
 	g.endTime = endTime
 }
 
-// インターフェイス
-type GameMasterAction interface {
-	AssignTheme(groupID int) (string, error)
-	StartToMesureTime(groupID int) error
-	GetLimitTime(groupID int) (time.Time, error)
-	GetResult(groupID int) error
-	AddMember(id, groupID int) error
-	//ManageVote(id, id int) error
+// RemainingTime ゲーム残り時間を取得する
+func (g *GameMaster) RemainingTime() time.Duration {
+	return g.endTime.Sub(time.Now())
 }
