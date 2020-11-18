@@ -1,19 +1,10 @@
-package usecase
+package usecases
 
 import (
 	. "github.com/takuyaaaaaaahaaaaaa/go_wordwolf/src/app/domain"
 )
 
 type EngineerWordWolfUseCase struct {
-	memberAction     MemberAction
-	gameMasterAction GameMasterAction
-}
-
-func NewEngineerWordWolfUseCase(memberAction MemberAction, gameMasterAction GameMasterAction) *EngineerWordWolfUseCase {
-	return &EngineerWordWolfUseCase{
-		memberAction:     memberAction,
-		gameMasterAction: gameMasterAction,
-	}
 }
 
 // ゲームに参加する
