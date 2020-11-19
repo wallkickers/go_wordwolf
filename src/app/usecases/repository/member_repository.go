@@ -4,7 +4,7 @@ import (
 	"github.com/takuyaaaaaaahaaaaaa/go_wordwolf/src/app/domain"
 )
 
-// MemberRepository メンバーの更新リポジトリ（取得には使わないこと）
+// MemberRepository メンバーリポジトリ
 type MemberRepository interface {
 	// メンバーを保存する
 	Save(domain.Member) error

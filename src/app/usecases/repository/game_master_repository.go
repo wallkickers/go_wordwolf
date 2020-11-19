@@ -4,7 +4,7 @@ import (
 	"github.com/takuyaaaaaaahaaaaaa/go_wordwolf/src/app/domain"
 )
 
-// GameMasterRepository ゲームマスターの更新リポジトリ（取得には使わないこと）
+// GameMasterRepository ゲームマスタ リポジトリ
 type GameMasterRepository interface {
 	// ゲームマスターを保存する
 	Save(domain.GameMaster) error
