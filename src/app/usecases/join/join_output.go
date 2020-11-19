@@ -1,8 +1,9 @@
-package join_usecase
+package join
 
-type JoinInputDto struct {
+type JoinOutput struct {
 	ReplyToken string
 	MemberID   string
 	MemberName string
 	GloupID    string
+	err        error
 }
