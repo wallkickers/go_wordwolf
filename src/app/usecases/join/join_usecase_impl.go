@@ -21,6 +21,8 @@ func (j *JoinUseCaseImpl) JoinGame(input JoinInput) JoinOutput {
 	// ゲームマスターを取得する
 	var gameMaster, err = j.gameMasterRepository.FindGameMasterByGroupID(input.GroupID)
 	if err != nil {
+		if err == repository.ErrNotFound
+
 	}
 	if gameMaster == nil {
 		gameMaster = domain.NewGameMaster(input.GroupID)
