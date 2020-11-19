@@ -9,5 +9,5 @@ type GameMasterRepository interface {
 	// ゲームマスターを保存する
 	save(domain.GameMaster) error
 	// グループIDを指定してゲームマスターを取得する
-	findGameMasterByGroupID(string) (domain.GameMaster, error)
+	findGameMasterByGroupID(string) domain.GameMaster
 }

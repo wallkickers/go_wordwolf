@@ -6,5 +6,5 @@ type JoinInput struct {
 	ReplyToken string
 	MemberID   string
 	MemberName string
-	GloupID    string
+	GroupID    string
 }
