@@ -7,7 +7,7 @@ import (
 // MemberRepository メンバーの更新リポジトリ（取得には使わないこと）
 type MemberRepository interface {
 	// メンバーを保存する
-	save(domain.Member) error
+	Save(domain.Member) error
 	// メンバーIDを指定してメンバーを取得する
-	findMemberByID(string) (domain.Member, error)
+	FindMemberByID(string) (domain.Member, error)
 }

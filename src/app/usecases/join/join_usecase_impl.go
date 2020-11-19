@@ -16,26 +16,31 @@ type JoinUseCaseImpl struct {
 // インターフェースを満たしているかのチェック
 var _ JoinUseCase = (*JoinUseCaseImpl)(nil)
 
-// ゲームに参加する
+// JoinGame ゲームに参加する
 func (j *JoinUseCaseImpl) JoinGame(input JoinInput) JoinOutput {
+
+		// メンバーを取得する
+		var ga, err = j.memberRepository.Find
+		if err != nil {
+		}
+		if gameMaster == nil {
+			gameMaster = domain.NewGameMaster(input.GroupID)
+		}
+		// ゲームマスターにメンバーを追加する
+
 	// ゲームマスターを取得する
 	var gameMaster, err = j.gameMasterRepository.FindGameMasterByGroupID(input.GroupID)
 	if err != nil {
-		if err == repository.ErrNotFound
+		if err == repository.ErrNotFound {
+			gameMaster = 
+		}
 
 	}
 	if gameMaster == nil {
 		gameMaster = domain.NewGameMaster(input.GroupID)
 	}
 
-	// メンバーを取得する
-	var ga, err = j.gameMasterRepository.FindGameMasterByGroupID(input.GroupID)
-	if err != nil {
-	}
-	if gameMaster == nil {
-		gameMaster = domain.NewGameMaster(input.GroupID)
-	}
-	// ゲームマスターにメンバーを追加する
+
 	// メンバーを保存する
 	// ゲームマスタを保存する。
 	// プレゼンターに出力する
