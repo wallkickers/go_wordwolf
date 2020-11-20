@@ -2,9 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="2294f092-08fc-4318-b185-44d647d24dbc" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/domain/gameMaster.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/domain/gameMaster.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/usecase/EngineerWordWolfUseCase.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/usecase/EngineerWordWolfUseCase.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/usecases/join/join_usecase_impl.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/usecases/join/join_usecase_impl.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

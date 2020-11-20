@@ -26,3 +26,8 @@ func (m *Member) ID() string {
 func (m *Member) Name() string {
 	return m.name
 }
+
+// SetName メンバー名を設定する
+func (m *Member) SetName(memberName string) {
+	m.name = memberName
+}

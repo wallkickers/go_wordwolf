@@ -1,13 +1,13 @@
 package repository
 
 import (
-	"github.com/takuyaaaaaaahaaaaaa/go_wordwolf/src/app/domain"
+	"github.com/go-server-dev/src/app/domain"
 )
 
 // MemberRepository メンバーリポジトリ
 type MemberRepository interface {
 	// メンバーを保存する
-	Save(domain.Member) error
+	Save(*domain.Member) error
 	// メンバーIDを指定してメンバーを取得する
-	FindMemberByID(string) (domain.Member, error)
+	FindMemberByID(string) (*domain.Member, error)
 }
