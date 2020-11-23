@@ -88,7 +88,7 @@ func (g *GameMaster) SetEndTime(endTime time.Time) {
 	g.endTime = endTime
 }
 
-// RemainingTime ゲーム残り時間を取得する
-func (g *GameMaster) RemainingTime() time.Duration {
-	return g.endTime.Sub(time.Now())
+// RemainingTime 現在時刻からゲーム残り時間を取得する
+func (g *GameMaster) RemainingTime(nowTime time.Time) time.Duration {
+	return g.endTime.Sub(nowTime)
 }
