@@ -3,7 +3,7 @@ package join
 
 import (
 	"github.com/go-server-dev/src/app/domain"
-	"github.com/go-server-dev/src/app/usecases/repository"
+	"github.com/go-server-dev/src/app/usecase/repository"
 )
 
 // UseCaseImpl ゲーム参加ユースケース実装
@@ -17,6 +17,21 @@ type UseCaseImpl struct {
 
 // インターフェースを満たしているかのチェック
 var _ UseCase = (*UseCaseImpl)(nil)
+
+// NewUseCaseImpl ゲーム参加ユースケースインスタンスを新規作成する
+func NewUseCaseImpl(member domain.Member,
+	gameMaster domain.GameMaster,
+	gameMasterRepository repository.GameMasterRepository,
+	memberRepository repository.MemberRepository,
+	presenter Presenter) *UseCaseImpl {
+	return &UseCaseImpl{
+		member:               member,
+		gameMaster:           gameMaster,
+		gameMasterRepository: gameMasterRepository,
+		memberRepository:     memberRepository,
+		presenter:            presenter,
+	}
+}
 
 // Excute ゲームに参加する
 func (j *UseCaseImpl) Excute(input Input) Output {
