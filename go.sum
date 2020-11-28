@@ -1,4 +1,6 @@
+github.com/line/line-bot-sdk-go v1.3.0 h1:bYwGgbUrYbvTEJ8oOT18rmkclJOCB1RtLwYVZ97ello=
 github.com/line/line-bot-sdk-go v7.6.0+incompatible h1:Nc6hiry9gAaWJ28VAmH5b/mNqAr2l9leHXTVGmn4jHQ=
 github.com/line/line-bot-sdk-go v7.6.0+incompatible/go.mod h1:0RjLjJEAU/3GIcHkC3av6O4jInAbt25nnZVmOFUgDBg=
+github.com/line/line-bot-sdk-go v7.7.0+incompatible h1:iuAWKyPJS3bzNfFbA/ov/G/pZv5WFhDXwv0+TfMatnM=
 github.com/takuyaaaaaaahaaaaaa/go_wordwolf v0.0.0-20201119134957-854e16be01ad h1:xGdDDrC86k6aLB10l+942nhAIqKicPe24Ok+5x0gp5Y=
 github.com/takuyaaaaaaahaaaaaa/go_wordwolf v0.0.0-20201119134957-854e16be01ad/go.mod h1:xmX2inttCJiPvCyUW5n4gQHy37l+7AoAJ+7heysUKK8=

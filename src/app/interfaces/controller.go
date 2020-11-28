@@ -1,4 +1,4 @@
-package line
+package interfaces
 
 import (
 	"github.com/go-server-dev/src/app/usecase/join"
@@ -10,7 +10,7 @@ import (
 
 // LinebotController LINEBOTコントローラ
 type LinebotController struct {
-	joinUseCase join.UseCase
+	joinUseCase join.UseCase // ゲームに参加する
 	bot         *linebot.Client
 }
 
@@ -48,14 +48,36 @@ func (c *LinebotController) CallBack(w http.ResponseWriter, r *http.Request) {
 		log.Printf("Got event %v", event)
 		switch event.Type {
 		case linebot.EventTypeMessage:
-		case linebot.EventTypeFollow:
-		case linebot.EventTypeUnfollow:
-		case linebot.EventTypeJoin:
-		case linebot.EventTypeLeave:
-		case linebot.EventTypePostback:
-		case linebot.EventTypeBeacon:
+			switch message := event.Message.(type) {
+			case *linebot.TextMessage:
+				if err := app.handleText(message, event.ReplyToken, event.Source); err != nil {
+					log.Print(err)
+				}
+			default:
+				log.Printf("Unknown message: %v", message)
+			}
 		default:
 			log.Printf("Unknown event: %v", event)
 		}
+	}
+}
+
+func (c *LinebotController) handleText(message *linebot.TextMessage, replyToken string, source *linebot.EventSource) error {
+	var groupRoomID string
+	switch source.Type {
+	case "group":
+		groupRoomID = source.GroupID
+	case "room":
+		groupRoomID = source.RoomID
+	}
+
+	switch message.Text {
+	case "参加":
+		input := join.Input{
+			ReplyToken:    replyToken,
+			MemberID:      source.UserID,
+			GroupRoomID:   groupRoomID,
+			GroupRoomType: linebot.EventSourceType(source.Type)}
+	default:
 	}
 }

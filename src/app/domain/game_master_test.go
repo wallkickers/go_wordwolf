@@ -14,7 +14,7 @@ func TestMain(m *testing.M) {
 // 現在時刻 < 終了時刻のとき、正の値を返す
 func TestRemainingTime_withNowBeforeEndTime_positive(t *testing.T) {
 	// 事前準備
-	g := NewGameMaster("test123")
+	g := NewGameMaster("test123", GroupRoomType("group"))
 	endTime := time.Date(2020, 6, 1, 17, 00, 13, 0, time.Local)
 	nowTime := time.Date(2020, 6, 1, 16, 00, 13, 0, time.Local)
 	// 条件_現在時刻 < 終了時刻
@@ -37,7 +37,7 @@ func TestRemainingTime_withNowBeforeEndTime_positive(t *testing.T) {
 // 現在時刻 > 終了時刻のとき、負の値を返す
 func TestRemainingTime_withNowBeforeEndTime_negative(t *testing.T) {
 	// 事前準備
-	g := NewGameMaster("test123")
+	g := NewGameMaster("test123", GroupRoomType("room"))
 	endTime := time.Date(2020, 6, 1, 17, 00, 13, 0, time.Local)
 	nowTime := time.Date(2020, 6, 1, 18, 30, 13, 0, time.Local)
 	// 条件_現在時刻 < 終了時刻

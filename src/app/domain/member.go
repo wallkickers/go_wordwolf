@@ -10,10 +10,9 @@ type Member struct {
 }
 
 // NewMember ゲーム参加者インスタンスを新規作成する
-func NewMember(id, name string) *Member {
+func NewMember(id string) *Member {
 	return &Member{
-		id:   id,
-		name: name,
+		id: id,
 	}
 }
 

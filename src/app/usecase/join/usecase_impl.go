@@ -37,32 +37,34 @@ func NewUseCaseImpl(member domain.Member,
 func (j *UseCaseImpl) Excute(input Input) Output {
 
 	//出力DTO作成
-	var output Output
-	output.MemberName = input.MemberName
-	output.MemberID = input.MemberID
-	output.GroupID = input.GroupID
-	output.ReplyToken = input.ReplyToken
+	output := Output{
+		MemberID:      input.MemberID,
+		GroupRoomID:   input.GroupRoomID,
+		GroupRoomType: input.GroupRoomType,
+		ReplyToken:    input.ReplyToken,
+	}
 
 	// メンバーを取得
 	member, errMemeberRepo := j.memberRepository.FindMemberByID(input.MemberID)
 	if errMemeberRepo != nil {
 		if errMemeberRepo == repository.ErrNotFound {
 			// 未登録時、新規作成する
-			member = domain.NewMember(input.MemberID, input.MemberName)
+			member = domain.NewMember(input.MemberID)
 		} else {
 			// 取得エラー時の処理
-			// TODO エラーをセット output.err = ???
+			// TODO: エラーをセット output.err = ???
 			j.presenter.Execute(output)
 			return output
 		}
 	}
+	// TODO: ユーザ名を取得して、更新
 
 	// ゲームマスターを取得
-	gameMaster, errGameMasterRepo := j.gameMasterRepository.FindGameMasterByGroupID(input.GroupID)
+	gameMaster, errGameMasterRepo := j.gameMasterRepository.FindGameMasterByGroupID(input.GroupRoomID)
 	if errGameMasterRepo != nil {
 		if errGameMasterRepo == repository.ErrNotFound {
 			// 未登録時、新規作成する
-			gameMaster = domain.NewGameMaster(input.GroupID)
+			gameMaster = domain.NewGameMaster(input.GroupRoomID, domain.GroupRoomType(input.GroupRoomType))
 		} else {
 			// 取得エラー時の処理
 			// TODO エラーをセット output.err = ???
@@ -71,8 +73,6 @@ func (j *UseCaseImpl) Excute(input Input) Output {
 		}
 	}
 
-	// メンバー名を更新
-	member.SetName(input.MemberName)
 	// 参加メンバーに追加
 	gameMaster.SetMember(member.ID())
 
@@ -81,6 +81,7 @@ func (j *UseCaseImpl) Excute(input Input) Output {
 	j.gameMasterRepository.Save(gameMaster)
 
 	// 出力
+	//output.memberName = ?? 取得したユーザ名を入力
 	output.err = nil
 	j.presenter.Execute(output)
 	return output

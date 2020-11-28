@@ -7,8 +7,10 @@ import (
 
 // GameMaster はゲーム管理者を表す
 type GameMaster struct {
-	// グループID
-	groupID string
+	// グループ・ルームID
+	groupRoomID string
+	// グループ・ルーム種別
+	groupRoomType GroupRoomType
 	// 参加メンバーリスト
 	memberList map[string]bool
 	// 各メンバーのお題リスト([参加メンバー]お題)
@@ -21,16 +23,35 @@ type GameMaster struct {
 	endTime time.Time
 }
 
+// GroupRoomType グループ・ルームの種別
+type GroupRoomType string
+
+const (
+	//Group 種別がグループ（）
+	group = GroupRoomType("group")
+	//Room 種別がルーム（複数人のトーク）
+	room = GroupRoomType("room")
+)
+
 // NewGameMaster ゲーム管理者インスタンスを新規作成する
-func NewGameMaster(groupID string) *GameMaster {
+func NewGameMaster(groupRoomID string, groupRoomType GroupRoomType) *GameMaster {
 	return &GameMaster{
-		groupID: groupID,
+		groupRoomID:     groupRoomID,
+		groupRoomType:   groupRoomType,
+		memberList:      map[string]bool{},
+		themeManagement: map[string]string{},
+		voteManagement:  map[string]string{},
 	}
 }
 
-// GroupID グループIDを取得する
-func (g *GameMaster) GroupID() string {
-	return g.groupID
+// GroupRoomID グループルームIDを取得する
+func (g *GameMaster) GroupRoomID() string {
+	return g.groupRoomID
+}
+
+// GroupRoomType グループルーム種別を取得する
+func (g *GameMaster) GroupRoomType() GroupRoomType {
+	return g.groupRoomType
 }
 
 // MemberList 参加メンバーリストを取得する
