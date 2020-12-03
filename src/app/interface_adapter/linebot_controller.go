@@ -33,7 +33,7 @@ func NewLinebotController(
 	}
 }
 
-// CallBack LINEBOTに関する処理
+// CallBack LINEBOTに関するリクエスト処理
 func (c *LinebotController) CallBack(w http.ResponseWriter, r *http.Request) {
 	events, err := c.bot.ParseRequest(r)
 	if err != nil {
@@ -44,15 +44,20 @@ func (c *LinebotController) CallBack(w http.ResponseWriter, r *http.Request) {
 		}
 		return
 	}
+	c.handleEvent(events)
+}
+
+// handleEvent Eventを振り分ける
+func (c *LinebotController) handleEvent(events []*linebot.Event) {
 	for _, event := range events {
 		log.Printf("Got event %v", event)
 		switch event.Type {
 		case linebot.EventTypeMessage:
+			//メッセージイベント
 			switch message := event.Message.(type) {
 			case *linebot.TextMessage:
-				if err := app.handleText(message, event.ReplyToken, event.Source); err != nil {
-					log.Print(err)
-				}
+				c.handleText(message, event.ReplyToken, event.Source)
+			//その他イベント
 			default:
 				log.Printf("Unknown message: %v", message)
 			}
@@ -62,7 +67,8 @@ func (c *LinebotController) CallBack(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (c *LinebotController) handleText(message *linebot.TextMessage, replyToken string, source *linebot.EventSource) error {
+// handleText テキストメッセージを処理する
+func (c *LinebotController) handleText(message *linebot.TextMessage, replyToken string, source *linebot.EventSource) {
 	var groupRoomID string
 	switch source.Type {
 	case "group":
@@ -77,7 +83,9 @@ func (c *LinebotController) handleText(message *linebot.TextMessage, replyToken 
 			ReplyToken:    replyToken,
 			MemberID:      source.UserID,
 			GroupRoomID:   groupRoomID,
-			GroupRoomType: linebot.EventSourceType(source.Type)}
+			GroupRoomType: string(source.Type),
+		}
+		c.joinUseCase.Excute(input)
 	default:
 	}
 }

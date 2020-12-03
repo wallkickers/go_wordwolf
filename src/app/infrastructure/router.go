@@ -11,7 +11,7 @@ type Router struct {
 }
 
 // NewRouter コンストラクタ
-func NewRouter(c interface_adapter.controller) *Router {
+func NewRouter(c interface_adapter.LineBotController) *Router {
 	return &Router{controller: c}
 }
 
