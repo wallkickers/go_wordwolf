@@ -2,59 +2,47 @@
 
 Go,ngrok を使用して「HelloWorld」を表示するまで。
 
-**1. Dockerfile から image 作成**
+**1. docker-compose.ymlを用いてコンテナ作成&起動**
 
 ```
-docker build -t go_alpine -f DockerfileForDev .
+cd env
+docker-compose up -d
 ```
-
--f オプションは Dockerfile のファイル名が Dockerfile でないときに必要なオプション
-
-**2. コンテナ起動**
-
-```
-docker run -d -e "PORT=3010" -p 3010:3010 -v /Users/moriyama/Desktop/study/go_wordwolf:/go/src/github.com/go-server-dev -t go_alpine
-```
-
 -d：コンテナをバックグランドで実行  
--e：環境変数設定  
--p：ポートの設定  
--v：ホスト PC とのマウント設定。※コロンより左は自分がマウントしたい絶対パスを入力  
--t：build 時に「go_alpine」という名前でタグをつけたので、タグ指定で起動することが可能
 
-**3. コンテナの ID を確認**
+**2. コンテナ起動確認**
+```
+docker-compose ps
+```
+全てUpになっていれば成功。
+
+**3. コンテナ名を指定してコンテナの中に入る。**
 
 ```
-docker ps
+# botコンテナ(アプリケーションサーバ)の場合
+docker-compose exec bot ash
 ```
-
-**4. ID を指定してコンテナの中に入る。**
-
-```
-docker exec -it 60c959e8d29d ash
-```
-
 ash：alpine を操作する際に使用するコマンド
 
-**5. main.go ファイルをビルド**
 
+**4. main.go ファイルをビルド**
 ```
 go build main.go
 ```
 
-**6. ポート 3010 で起動**
+**5. ポート 3010 で起動**
 
 ```
 ./main 3010
 ```
 
-**7. 別ターミナルで同じくコンテナに入り ngrok を 3010 で起動**
+**6. 別ターミナルで同じくコンテナに入り ngrok を 3010 で起動**
 
 ```
 ngrok http 3010
 ```
 
-**8. ブラウザで表示された URL に接続し、「HelloWorld!!!」が出れば成功**
+**7. ブラウザで表示された URL に接続し、「HelloWorld!!!」が出れば成功**
 
 ```
 ...
@@ -107,3 +95,49 @@ Webhook URL
 **6. 友達登録後、メッセージを送信し、返信があれば成功。**
 
 友達登録は LINE Developers 管理画面の QR コードを読み込むことで可能。
+
+# 開発環境構築【Dockerfileからコンテナ作成】(How to build development environment)
+※基本は上部の「開発環境構築」で良いが備忘録として残しておく。
+
+Go,ngrok を使用して「HelloWorld」を表示するまで。
+
+**1. Dockerfile から image 作成**
+
+```
+cd env
+docker-compose up -d
+docker build -t go_alpine -f DockerfileForDev .
+```
+
+-f オプションは Dockerfile のファイル名が Dockerfile でないときに必要なオプション
+
+**2. コンテナ起動**
+
+```
+docker run -d -e "PORT=3010" -p 3010:3010 -v /Users/moriyama/Desktop/study/go_wordwolf:/go/src/github.com/go-server-dev -t go_alpine
+```
+
+-d：コンテナをバックグランドで実行  
+-e：環境変数設定  
+-p：ポートの設定  
+-v：ホスト PC とのマウント設定。※コロンより左は自分がマウントしたい絶対パスを入力  
+-t：build 時に「go_alpine」という名前でタグをつけたので、タグ指定で起動することが可能
+
+**3. コンテナの ID を確認**
+
+```
+docker ps
+```
+
+**4. ID を指定してコンテナの中に入る。**
+
+```
+docker exec -it 60c959e8d29d ash
+```
+
+ash：alpine を操作する際に使用するコマンド
+
+## 参考
+【docker-compose系】
+・docker-compose.ymlでDockerfileを指定したい
+https://cloudpack.media/44104
