@@ -137,7 +137,75 @@ docker exec -it 60c959e8d29d ash
 
 ash：alpine を操作する際に使用するコマンド
 
+# golang-migrateによるDBへのテーブル追加(How to create table using Migration by golang-migrate)
+migrateファイルでテーブルを追加する。
+
+**1. env\mysql\migrateに{連番}_{title}.up.sqlと{連番}_{title}.down.sql作成**
+(例)初期のテーブル追加
+作成用　　　　：1_initialize_schema.up.sql
+失敗時に戻す用：1_initialize_schema.down.sql
+
+**2. upにはcreate tableを、downにはdropする処理を記載**
+```up.sql
+create table user (
+    id integer auto_increment primary key,
+    name varchar(40)
+)
+```
+
+```down.sql
+drop tabel user
+```
+
+**3. botコンテナに入り、migrateコマンド実行**
+```
+# botコンテナに入る
+docker-compose exec bot ash
+# migrateコマンド実行
+migrate -source file://env/mysql/migrate -database 'mysql://root:password@tcp(mysql:3306)/wordwolf' up 1
+```
+
+-source：migrateファイルのディレクトリ
+-database：DBの指定
+mysql：DBのコンテナ名
+root,password：DBへの接続情報
+mysql:3306：DBのコンテナ名とポート(compose.yml参照)
+wordwolf：DB名
+up：up.sqlを実行
+1：連番指定
+
+※downするときは「up」を「down」で実行。
+```
+# migrateコマンド実行
+migrate -source file://env/mysql/migrate -database 'mysql://root:password@tcp(mysql:3306)/wordwolf' down 1
+```
+
+**4. migrate実行を確認**
+```
+# dbコンテナに入る
+docker-compose exec mysql bash
+# migrateコマンド実行
+mysql -u root -p
+# パスワード入力
+password
+# DB「wordwolf」指定
+use wordwolf
+# テーブル確認
+show tables;
+```
+userテーブルが追加されていれば成功。
+
 ## 参考
-【docker-compose系】
-・docker-compose.ymlでDockerfileを指定したい
-https://cloudpack.media/44104
+【docker-compose系】  
+・docker-compose.ymlでDockerfileを指定したい  
+https://cloudpack.media/44104  
+
+【DB系】  
+・golang-migrate/migrate  
+https://github.com/golang-migrate/migrate/tree/master/database/mysql  
+
+・go modules環境でgolang-migrate/migrateを動かす  
+https://yuzu441.hateblo.jp/entry/2019/06/11/150000  
+
+Dockerでmysqlに接続できない(GO/gin/GORM)  
+https://qiita.com/paragaki/items/9bba24c57e468400cb2c#%E8%A7%A3%E6%B1%BA%E7%AD%96  
