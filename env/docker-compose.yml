@@ -1,0 +1,31 @@
+version: '3'
+services:
+  # LINEbot
+  bot:
+    build:
+      # Dockerfile名を変更しているためcontextとdockerfileを用いてDockerfileの場所を指定
+      context: ./bot
+      dockerfile: DockerfileForDev
+    ports:
+      - "3010:3010"
+    tty: true
+    environment:
+      TZ: "Asia/Tokyo"
+      LANG: "ja_JP.utf8"
+      LC_ALL: "ja_JP.utf8"
+    volumes:
+      - ../:/go/src/github.com/go-server-dev
+    working_dir: /go/src/github.com/go-server-dev
+  # DB
+  mysql:
+    image: mysql:5.7.32
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: "wordwolf"
+      MYSQL_ROOT_PASSWORD: "password"
+      TZ: "Asia/Tokyo"
+    # command: mysqld --character-set-server=utf8 --collation-server=utf8_unicode_ci --log-output=TABLE --slow-query-log=ON --long-query-time=0.01
+  # インメモリDB
+  redis:
+    image: redis:6.0
