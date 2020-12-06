@@ -1,4 +1,4 @@
-package interfaces
+package interface_adapter
 
 import (
 	"github.com/go-server-dev/src/app/usecase/join"
@@ -86,6 +86,11 @@ func (c *LinebotController) handleText(message *linebot.TextMessage, replyToken 
 			GroupRoomType: string(source.Type),
 		}
 		c.joinUseCase.Excute(input)
+	case "テスト":
+		replyMessage := "テストメッセージ：" + message.Text
+		if _, err := c.bot.ReplyMessage(replyToken, linebot.NewTextMessage(replyMessage)).Do(); err != nil {
+			log.Print(err)
+		}
 	default:
 	}
 }
