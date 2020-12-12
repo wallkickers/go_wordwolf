@@ -10,9 +10,9 @@ type Router struct {
 	controller interface_adapter.LinebotController
 }
 
-// NewRouter コンストラクタ
-func addLineBotController(c interface_adapter.LinebotController) *Router {
-	return &Router{controller: c}
+// AddLineBotController コンストラクタ
+func (r *Router) AddLineBotController(controller interface_adapter.LinebotController) {
+	r.controller = controller
 }
 
 // Init ルーティング設定

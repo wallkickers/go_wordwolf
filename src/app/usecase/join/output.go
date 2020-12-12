@@ -8,5 +8,5 @@ type Output struct {
 	MemberName    string
 	GroupRoomID   string
 	GroupRoomType string
-	err           error
+	Err           error
 }

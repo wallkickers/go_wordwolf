@@ -41,7 +41,7 @@ func (j *UseCaseImpl) Excute(input Input) Output {
 	// メンバーを取得
 	member, err := j.readOnlyRepository.FindMemberByID(input.MemberID)
 	if err != nil {
-		output.err = err
+		output.Err = err
 		j.presenter.Execute(output)
 		return output
 	}
@@ -52,7 +52,7 @@ func (j *UseCaseImpl) Excute(input Input) Output {
 	// ゲームマスターを取得
 	gameMaster, err := j.readOnlyRepository.FindGameMasterByGroupID(input.GroupRoomID)
 	if err != nil {
-		output.err = err
+		output.Err = err
 		j.presenter.Execute(output)
 		return output
 	}
@@ -60,13 +60,13 @@ func (j *UseCaseImpl) Excute(input Input) Output {
 	// 参加メンバーを追加
 	gameMaster.SetMember(member.ID())
 	if err = j.gameMasterRepository.Save(gameMaster); err != nil {
-		output.err = err
+		output.Err = err
 		j.presenter.Execute(output)
 		return output
 	}
 
 	// 出力
-	output.err = nil
+	output.Err = nil
 	j.presenter.Execute(output)
 	return output
 }

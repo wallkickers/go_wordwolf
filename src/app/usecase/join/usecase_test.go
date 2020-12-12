@@ -45,7 +45,7 @@ func TestExecute_withInput_success(t *testing.T) {
 		ReplyToken:    "testReplyToken",
 		MemberID:      "testMemberID12345",
 		GroupRoomID:   "testGroup12345",
-		GroupRoomType: "testGroup",
+		GroupRoomType: "group",
 	}
 	dummyMember := domain.NewMember(dummyInput.MemberID, "testMemberName_Taro")
 	dummyGameMaster := domain.NewGameMaster(dummyInput.GroupRoomID, domain.GroupRoomType(dummyInput.GroupRoomType))
@@ -55,7 +55,7 @@ func TestExecute_withInput_success(t *testing.T) {
 		MemberID:      "testMemberID12345",
 		MemberName:    dummyMember.Name(),
 		GroupRoomID:   "testGroup12345",
-		GroupRoomType: "testGroup",
+		GroupRoomType: "group",
 	}
 	// 参照用リポジトリMock
 	readOnlyRepositoryMock := new(readOnlyRepositoryMock)
