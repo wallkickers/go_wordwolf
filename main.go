@@ -75,9 +75,9 @@ func main() {
 	gameMasterRepositoryMock := new(mocks.GameMasterRepository)
 	gameMasterRepositoryMock.On("Save", dummyGameMaster).Return(nil)
 	// Presenter
-	joinPresenter := interface_adapter.NewLineBotJoinPresenter
+	joinPresenter := interface_adapter.NewLineBotJoinPresenter()
 	// UseCase
-	joinUseCase := join.NewUseCaseImpl(gameMasterRepositoryMock, gameMasterRepositoryMock, joinPresenter)
+	joinUseCase := join.NewUseCaseImpl(gameMasterRepositoryMock, readOnlyRepositoryMock, joinPresenter)
 	// Controller
 	controller := interface_adapter.NewLinebotController(joinUseCase)
 	// Router

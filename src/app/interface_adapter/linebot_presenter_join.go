@@ -12,6 +12,9 @@ type LineBotJoinPresenter struct {
 	bot *linebot.Client
 }
 
+// インターフェースを満たしているかのチェック
+var _ join.Presenter = (*LineBotJoinPresenter)(nil)
+
 // NewLineBotJoinPresenter  コンストラクタ
 func NewLineBotJoinPresenter() *LineBotJoinPresenter {
 
@@ -29,8 +32,8 @@ func NewLineBotJoinPresenter() *LineBotJoinPresenter {
 	}
 }
 
-// Excute 表示処理
-func (p *LineBotJoinPresenter) Excute(output join.Output) error {
+// Execute 表示処理
+func (p *LineBotJoinPresenter) Execute(output join.Output) error {
 
 	if output.Err != nil {
 		switch output.Err {
