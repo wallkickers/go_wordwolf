@@ -1,4 +1,4 @@
-// package usecases
+package usecase
 
 // import (
 // 	. "github.com/takuyaaaaaaahaaaaaa/go_wordwolf/src/app/domain"

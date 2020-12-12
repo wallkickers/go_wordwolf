@@ -7,12 +7,12 @@ import (
 
 // Router URLに対するルーティング
 type Router struct {
-	controller interface_adapter.LineBotController
+	controller interface_adapter.LinebotController
 }
 
-// NewRouter コンストラクタ
-func NewRouter(c interface_adapter.controller) *Router {
-	return &Router{controller: c}
+// AddLineBotController コンストラクタ
+func (r *Router) AddLineBotController(controller interface_adapter.LinebotController) {
+	r.controller = controller
 }
 
 // Init ルーティング設定
