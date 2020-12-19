@@ -1,25 +1,26 @@
-// Package join ゲーム参加に関するパッケージ
-package join
+// Package impl ユースケース実装
+package impl
 
 import (
+	"github.com/go-server-dev/src/app/usecase/join"
 	"github.com/go-server-dev/src/app/usecase/repository"
 )
 
 // UseCaseImpl ゲーム参加ユースケース実装
 type UseCaseImpl struct {
 	gameMasterRepository repository.GameMasterRepository
-	readOnlyRepository   ReadOnlyRepository
-	presenter            Presenter
+	readOnlyRepository   join.ReadOnlyRepository
+	presenter            join.Presenter
 }
 
 // インターフェースを満たしているかのチェック
-var _ UseCase = (*UseCaseImpl)(nil)
+var _ join.UseCase = (*UseCaseImpl)(nil)
 
 // NewUseCaseImpl ゲーム参加ユースケースインスタンスを新規作成する
 func NewUseCaseImpl(
 	gameMasterRepository repository.GameMasterRepository,
-	readOnlyRepository ReadOnlyRepository,
-	presenter Presenter) *UseCaseImpl {
+	readOnlyRepository join.ReadOnlyRepository,
+	presenter join.Presenter) *UseCaseImpl {
 	return &UseCaseImpl{
 		gameMasterRepository: gameMasterRepository,
 		readOnlyRepository:   readOnlyRepository,
@@ -28,10 +29,10 @@ func NewUseCaseImpl(
 }
 
 // Excute ゲームに参加する
-func (j *UseCaseImpl) Excute(input Input) Output {
+func (j *UseCaseImpl) Excute(input join.Input) join.Output {
 
 	//出力DTO作成
-	output := Output{
+	output := join.Output{
 		MemberID:      input.MemberID,
 		GroupRoomID:   input.GroupRoomID,
 		GroupRoomType: input.GroupRoomType,
