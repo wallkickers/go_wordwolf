@@ -1,4 +1,4 @@
-package infrastruture
+package infrastructure
 
 import (
 	"github.com/go-server-dev/src/app/interface_adapter"

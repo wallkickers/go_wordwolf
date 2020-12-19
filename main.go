@@ -7,6 +7,8 @@ import (
 	"github.com/go-server-dev/src/app/interface_adapter"
 	"github.com/go-server-dev/src/app/mocks"
 	"github.com/go-server-dev/src/app/usecase/join"
+	"github.com/joho/godotenv"
+	"github.com/sirupsen/logrus"
 	"github.com/line/line-bot-sdk-go/linebot"
 	"github.com/stretchr/testify/mock"
 	"log"
@@ -17,14 +19,20 @@ import (
 
 // httpリクエストが来た時
 func handler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Hello world!\n")
+	// err := godotenv.Load(".env")
+	// if err != nil {
+	// 	logrus.Fatalf("Error loading env: %v", err)
 }
 
 func lineHandler(w http.ResponseWriter, r *http.Request) {
+	// err := godotenv.Load(".env")
+	// if err != nil {
+	// 	logrus.Fatalf("Error loading env: %v", err)
+	// }
 	bot, err := linebot.New(
 		// TODO: 開発者のLINEアカウントごとに変更する必要あり
-		os.Getenv("LBOT_SECRET"),
-		os.Getenv("LBOT_TOKEN"),
+		os.Getenv("LINEBOT_CHANNEL_SECRET"),
+		os.Getenv("LINEBOT_CHANNEL_ACCESS_TOKEN"),
 	)
 	if err != nil {
 		log.Fatal(err)
@@ -81,7 +89,7 @@ func main() {
 	// Controller
 	controller := interface_adapter.NewLinebotController(joinUseCase)
 	// Router
-	router := infrastruture.Router{}
+	router := infrastructure.Router{}
 	router.AddLineBotController(*controller)
 	router.Init()
 
