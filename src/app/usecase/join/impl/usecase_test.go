@@ -1,47 +1,18 @@
-package join
+package impl
 
 import (
-	"github.com/go-server-dev/src/app/domain"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/mock"
 	"testing"
+
+	"github.com/go-server-dev/src/app/domain"
+	"github.com/go-server-dev/src/app/usecase/join"
+	"github.com/go-server-dev/src/app/usecase/join/mocks"
+	"github.com/stretchr/testify/assert"
 )
-
-type readOnlyRepositoryMock struct {
-	mock.Mock
-}
-
-func (m *readOnlyRepositoryMock) FindMemberByID(memberID string) (*domain.Member, error) {
-	args := m.Called(memberID)
-	return args.Get(0).(*domain.Member), args.Error(1)
-}
-
-func (m *readOnlyRepositoryMock) FindGameMasterByGroupID(groupID string) (*domain.GameMaster, error) {
-	args := m.Called(groupID)
-	return args.Get(0).(*domain.GameMaster), args.Error(1)
-}
-
-type gameMasterRepositoryMock struct {
-	mock.Mock
-}
-
-func (m *gameMasterRepositoryMock) Save(gameMaster *domain.GameMaster) error {
-	args := m.Called(gameMaster)
-	return args.Error(0)
-}
-
-type presenterMock struct {
-	mock.Mock
-}
-
-func (m *presenterMock) Execute(output Output) {
-	m.Called(output)
-}
 
 // 正常系
 func TestExecute_withInput_success(t *testing.T) {
 	// ダミーデータ
-	dummyInput := Input{
+	dummyInput := join.Input{
 		ReplyToken:    "testReplyToken",
 		MemberID:      "testMemberID12345",
 		GroupRoomID:   "testGroup12345",
@@ -50,7 +21,7 @@ func TestExecute_withInput_success(t *testing.T) {
 	dummyMember := domain.NewMember(dummyInput.MemberID, "testMemberName_Taro")
 	dummyGameMaster := domain.NewGameMaster(dummyInput.GroupRoomID, domain.GroupRoomType(dummyInput.GroupRoomType))
 	dummyGameMaster.SetMember(dummyInput.MemberID)
-	dummyOutput := Output{
+	dummyOutput := join.Output{
 		ReplyToken:    "testReplyToken",
 		MemberID:      "testMemberID12345",
 		MemberName:    dummyMember.Name(),
@@ -58,14 +29,14 @@ func TestExecute_withInput_success(t *testing.T) {
 		GroupRoomType: "group",
 	}
 	// 参照用リポジトリMock
-	readOnlyRepositoryMock := new(readOnlyRepositoryMock)
+	readOnlyRepositoryMock := new(mocks.ReadOnlyRepository)
 	readOnlyRepositoryMock.On("FindMemberByID", dummyInput.MemberID).Return(dummyMember, nil)
 	readOnlyRepositoryMock.On("FindGameMasterByGroupID", dummyInput.GroupRoomID).Return(dummyGameMaster, nil)
 	// 更新用リポジトリMock
-	gameMasterRepositoryMock := new(gameMasterRepositoryMock)
+	gameMasterRepositoryMock := new(mocks.GameMasterRepository)
 	gameMasterRepositoryMock.On("Save", dummyGameMaster).Return(nil)
 	// プレゼンターMock
-	presenterMock := new(presenterMock)
+	presenterMock := new(mocks.Presenter)
 	presenterMock.On("Execute", dummyOutput)
 	joinUseCase := UseCaseImpl{
 		gameMasterRepository: gameMasterRepositoryMock,
