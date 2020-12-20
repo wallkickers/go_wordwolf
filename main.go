@@ -2,19 +2,18 @@ package main
 
 import (
 	"fmt"
-	"github.com/go-server-dev/src/app/domain"
-	"github.com/go-server-dev/src/app/infrastructure"
-	"github.com/go-server-dev/src/app/interface_adapter"
-	"github.com/go-server-dev/src/app/mocks"
-	"github.com/go-server-dev/src/app/usecase/join"
-	"github.com/joho/godotenv"
-	"github.com/sirupsen/logrus"
-	"github.com/line/line-bot-sdk-go/linebot"
-	"github.com/stretchr/testify/mock"
 	"log"
 	"net/http"
 	"os"
 	"strconv"
+
+	"github.com/go-server-dev/src/app/domain"
+	"github.com/go-server-dev/src/app/infrastructure"
+	"github.com/go-server-dev/src/app/interface_adapter"
+	"github.com/go-server-dev/src/app/mocks"
+	join "github.com/go-server-dev/src/app/usecase/join/impl"
+	"github.com/line/line-bot-sdk-go/linebot"
+	"github.com/stretchr/testify/mock"
 )
 
 // httpリクエストが来た時
@@ -72,22 +71,20 @@ func lineHandler(w http.ResponseWriter, r *http.Request) {
 // }
 
 func main() {
-	// ダミーデータ
+	// ゲーム参加UseCase
 	dummyMember := domain.NewMember("1", "テスト太郎")
 	dummyGameMaster := domain.NewGameMaster("123", domain.GroupRoomType("group"))
-	// 参照用リポジトリMock
 	readOnlyRepositoryMock := new(mocks.ReadOnlyRepository)
-	readOnlyRepositoryMock.On("FindMemberByID", mock.AnythingOfType("int")).Return(dummyMember, nil)
-	readOnlyRepositoryMock.On("FindGameMasterByGroupID", mock.AnythingOfType("int")).Return(dummyGameMaster, nil)
-	// 更新用リポジトリMock
+	readOnlyRepositoryMock.On("FindMemberByID", mock.AnythingOfType("string")).Return(dummyMember, nil)
+	readOnlyRepositoryMock.On("FindGameMasterByGroupID", mock.AnythingOfType("string")).Return(dummyGameMaster, nil)
 	gameMasterRepositoryMock := new(mocks.GameMasterRepository)
 	gameMasterRepositoryMock.On("Save", dummyGameMaster).Return(nil)
-	// Presenter
 	joinPresenter := interface_adapter.NewLineBotJoinPresenter()
-	// UseCase
 	joinUseCase := join.NewUseCaseImpl(gameMasterRepositoryMock, readOnlyRepositoryMock, joinPresenter)
+
 	// Controller
 	controller := interface_adapter.NewLinebotController(joinUseCase)
+
 	// Router
 	router := infrastructure.Router{}
 	router.AddLineBotController(*controller)
