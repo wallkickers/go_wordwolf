@@ -11,6 +11,10 @@ WORKDIR /go/src/github.com/go-server-dev
 # sdkインストール
 RUN go get github.com/line/line-bot-sdk-go/linebot
 
+# TODO: mockeryインストール&パス設定(up時にエラーで失敗するので要調査)
+# RUN go get github.com/vektra/mockery/v2 
+# RUN export PATH=$PATH:/root/go/bin
+
 # ngrokインストール&解凍
 RUN wget -P /usr/local/bin https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip
 RUN unzip /usr/local/bin/ngrok-stable-linux-amd64.zip -d /usr/local/bin
@@ -18,3 +22,6 @@ RUN unzip /usr/local/bin/ngrok-stable-linux-amd64.zip -d /usr/local/bin
 # golang-migrateインストール
 RUN curl -L https://github.com/golang-migrate/migrate/releases/download/v4.11.0/migrate.linux-amd64.tar.gz | tar xvz
 RUN mv ./migrate.linux-amd64 /usr/bin/migrate
+
+# godotenvインストール
+go get github.com/joho/godotenv
