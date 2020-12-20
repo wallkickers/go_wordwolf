@@ -12,22 +12,44 @@ import (
 	"github.com/go-server-dev/src/app/interface_adapter"
 	"github.com/go-server-dev/src/app/mocks"
 	join "github.com/go-server-dev/src/app/usecase/join/impl"
+	"github.com/joho/godotenv"
+	"github.com/sirupsen/logrus"
 	"github.com/line/line-bot-sdk-go/linebot"
 	"github.com/stretchr/testify/mock"
 )
 
-// httpリクエストが来た時
+// TODO: 開発用：httpリクエストが来た時
 func handler(w http.ResponseWriter, r *http.Request) {
-	// err := godotenv.Load(".env")
-	// if err != nil {
-	// 	logrus.Fatalf("Error loading env: %v", err)
+	// .envから環境変数読み込み
+	err := godotenv.Load(".env")
+	if err != nil {
+		logrus.Fatalf("Error loading env: %v", err)
+	}
+	fmt.Fprintf(w, "Hello world\n")
+}
+
+func newLineBot() *linebot.Client {
+	// .envから環境変数読み込み
+	err := godotenv.Load(".env")
+	if err != nil {
+		logrus.Fatalf("Error loading env: %v", err)
+	}
+	bot, err := linebot.New(
+		os.Getenv("LINEBOT_CHANNEL_SECRET"),
+		os.Getenv("LINEBOT_CHANNEL_ACCESS_TOKEN"),
+	)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return bot
 }
 
 func lineHandler(w http.ResponseWriter, r *http.Request) {
-	// err := godotenv.Load(".env")
-	// if err != nil {
-	// 	logrus.Fatalf("Error loading env: %v", err)
-	// }
+	// .envから環境変数読み込み
+	err := godotenv.Load(".env")
+	if err != nil {
+		logrus.Fatalf("Error loading env: %v", err)
+	}
 	bot, err := linebot.New(
 		// TODO: 開発者のLINEアカウントごとに変更する必要あり
 		os.Getenv("LINEBOT_CHANNEL_SECRET"),
@@ -71,6 +93,9 @@ func lineHandler(w http.ResponseWriter, r *http.Request) {
 // }
 
 func main() {
+	// LINEBotをNew
+	linebot := newLineBot()
+
 	// ゲーム参加UseCase
 	dummyMember := domain.NewMember("1", "テスト太郎")
 	dummyGameMaster := domain.NewGameMaster("123", domain.GroupRoomType("group"))
@@ -79,11 +104,11 @@ func main() {
 	readOnlyRepositoryMock.On("FindGameMasterByGroupID", mock.AnythingOfType("string")).Return(dummyGameMaster, nil)
 	gameMasterRepositoryMock := new(mocks.GameMasterRepository)
 	gameMasterRepositoryMock.On("Save", dummyGameMaster).Return(nil)
-	joinPresenter := interface_adapter.NewLineBotJoinPresenter()
+	joinPresenter := interface_adapter.NewLineBotJoinPresenter(linebot)
 	joinUseCase := join.NewUseCaseImpl(gameMasterRepositoryMock, readOnlyRepositoryMock, joinPresenter)
 
 	// Controller
-	controller := interface_adapter.NewLinebotController(joinUseCase)
+	controller := interface_adapter.NewLinebotController(joinUseCase, linebot)
 
 	// Router
 	router := infrastructure.Router{}
@@ -91,6 +116,7 @@ func main() {
 	router.Init()
 
 	port, _ := strconv.Atoi(os.Args[1])
+	http.HandleFunc("/", handler)             // / にリクエストが来た時はhandlerを呼ぶ。→ Hello world
 	fmt.Printf("Starting server at Port %d", port)
 	http.ListenAndServe(fmt.Sprintf(":%d", port), nil)
 }
