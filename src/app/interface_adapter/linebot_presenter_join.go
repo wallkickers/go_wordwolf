@@ -3,8 +3,6 @@ package interface_adapter
 import (
 	"github.com/go-server-dev/src/app/usecase/join"
 	"github.com/line/line-bot-sdk-go/linebot"
-	"log"
-	"os"
 )
 
 // LineBotJoinPresenter LINEBOTプレゼンター
@@ -16,17 +14,7 @@ type LineBotJoinPresenter struct {
 var _ join.Presenter = (*LineBotJoinPresenter)(nil)
 
 // NewLineBotJoinPresenter  コンストラクタ
-func NewLineBotJoinPresenter() *LineBotJoinPresenter {
-
-	secret := os.Getenv("LBOT_SECRET")
-	token := os.Getenv("LBOT_TOKEN")
-	bot, err := linebot.New(secret, token)
-
-	if err != nil {
-		// TODO:環境設定読み込み失敗時のエラー処理
-		log.Fatal(err)
-	}
-
+func NewLineBotJoinPresenter(bot *linebot.Client) *LineBotJoinPresenter {
 	return &LineBotJoinPresenter{
 		bot: bot,
 	}

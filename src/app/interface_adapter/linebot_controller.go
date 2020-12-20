@@ -1,11 +1,11 @@
 package interface_adapter
 
 import (
-	"github.com/go-server-dev/src/app/usecase/join"
-	"github.com/line/line-bot-sdk-go/linebot"
 	"log"
 	"net/http"
-	"os"
+
+	"github.com/go-server-dev/src/app/usecase/join"
+	"github.com/line/line-bot-sdk-go/linebot"
 )
 
 // LinebotController LINEBOTコントローラ
@@ -16,16 +16,7 @@ type LinebotController struct {
 
 // NewLinebotController コンストラクタ
 func NewLinebotController(
-	joinUseCase join.UseCase) *LinebotController {
-
-	secret := os.Getenv("LBOT_SECRET")
-	token := os.Getenv("LBOT_TOKEN")
-	bot, err := linebot.New(secret, token)
-
-	if err != nil {
-		// TODO:環境設定読み込み失敗時のエラー処理
-		log.Fatal(err)
-	}
+	joinUseCase join.UseCase, bot *linebot.Client) *LinebotController {
 
 	return &LinebotController{
 		joinUseCase: joinUseCase,

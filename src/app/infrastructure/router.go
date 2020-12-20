@@ -1,8 +1,9 @@
 package infrastructure
 
 import (
-	"github.com/go-server-dev/src/app/interface_adapter"
 	"net/http"
+
+	"github.com/go-server-dev/src/app/interface_adapter"
 )
 
 // Router URLに対するルーティング
