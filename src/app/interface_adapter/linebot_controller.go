@@ -4,21 +4,26 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/go-server-dev/src/app/usecase/accept_votes"
 	"github.com/go-server-dev/src/app/usecase/join"
 	"github.com/line/line-bot-sdk-go/linebot"
 )
 
 // LinebotController LINEBOTコントローラ
 type LinebotController struct {
+	acceptVotesUseCase accept_votes.UseCase // 投票を受け付ける
 	joinUseCase join.UseCase // ゲームに参加する
 	bot         *linebot.Client
 }
 
 // NewLinebotController コンストラクタ
 func NewLinebotController(
-	joinUseCase join.UseCase, bot *linebot.Client) *LinebotController {
-
+	acceptVotesUseCase accept_votes.UseCase,
+	joinUseCase join.UseCase,
+	bot *linebot.Client,
+	) *LinebotController {
 	return &LinebotController{
+		acceptVotesUseCase: acceptVotesUseCase,
 		joinUseCase: joinUseCase,
 		bot:         bot,
 	}
@@ -77,6 +82,15 @@ func (c *LinebotController) handleText(message *linebot.TextMessage, replyToken 
 			GroupRoomType: string(source.Type),
 		}
 		c.joinUseCase.Excute(input)
+	case "投票":
+		input := accept_votes.Input{
+			ReplyToken:    replyToken,
+			FromMemberID:  source.UserID,
+			ToMemberID:    source.UserID,
+			GroupRoomID:   groupRoomID,
+			GroupRoomType: string(source.Type),
+		}
+		c.acceptVotesUseCase.Excute(input)
 	case "テスト":
 		replyMessage := "テストメッセージ：" + message.Text
 		if _, err := c.bot.ReplyMessage(replyToken, linebot.NewTextMessage(replyMessage)).Do(); err != nil {

@@ -11,6 +11,7 @@ import (
 	"github.com/go-server-dev/src/app/infrastructure"
 	"github.com/go-server-dev/src/app/interface_adapter"
 	"github.com/go-server-dev/src/app/mocks"
+	accept_votes "github.com/go-server-dev/src/app/usecase/accept_votes/impl"
 	join "github.com/go-server-dev/src/app/usecase/join/impl"
 	"github.com/joho/godotenv"
 	"github.com/sirupsen/logrus"
@@ -107,8 +108,16 @@ func main() {
 	joinPresenter := interface_adapter.NewLineBotJoinPresenter(linebot)
 	joinUseCase := join.NewUseCaseImpl(gameMasterRepositoryMock, readOnlyRepositoryMock, joinPresenter)
 
+	// 投票受付UseCase
+	acceptVotesPresenter := interface_adapter.NewLineBotAcceptVotesPresenter(linebot)
+	acceptVotesUseCase := accept_votes.NewUseCaseImpl(gameMasterRepositoryMock, readOnlyRepositoryMock, acceptVotesPresenter)
+
 	// Controller
-	controller := interface_adapter.NewLinebotController(joinUseCase, linebot)
+	controller := interface_adapter.NewLinebotController(
+		acceptVotesUseCase,
+		joinUseCase,
+		linebot,
+	)
 
 	// Router
 	router := infrastructure.Router{}
