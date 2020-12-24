@@ -46,9 +46,10 @@ func (j *UseCaseImpl) Excute(input accept_votes.Input) accept_votes.Output {
 		return output
 	}
 
-	// 参加メンバーを追加
+	// 投票を管理
 	gameMaster.SetVoteManagement(input.FromMemberID, input.ToMemberID)
-	if err = j.gameMasterRepository.Save(gameMaster); err != nil {
+	if err = j.gameMasterRepository.Save(gameMaster);
+	err != nil {
 		output.Err = err
 		j.presenter.Execute(output)
 		return output
