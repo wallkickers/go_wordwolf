@@ -49,6 +49,7 @@ func (j *UseCaseImpl) Excute(input start_talk.Input) join.Output {
 
 	// 参加メンバーを追加
 	talkTime = gameMaster.TalkTimeMin()
+	gamemaster.SetEndTime(nowTime.add)
 	if err = j.gameMasterRepository.Save(gameMaster); err != nil {
 		output.Err = err
 		j.presenter.Execute(output)
