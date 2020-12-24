@@ -5,22 +5,25 @@ import (
 	"net/http"
 
 	"github.com/go-server-dev/src/app/usecase/join"
+	"github.com/go-server-dev/src/app/usecase/start_talk"
 	"github.com/line/line-bot-sdk-go/linebot"
 )
 
 // LinebotController LINEBOTコントローラ
 type LinebotController struct {
-	joinUseCase join.UseCase // ゲームに参加する
-	bot         *linebot.Client
+	joinUseCase      join.UseCase       // ゲームに参加する
+	startTalkUseCase start_talk.UseCase // トークを開始する
+	bot              *linebot.Client
 }
 
 // NewLinebotController コンストラクタ
 func NewLinebotController(
-	joinUseCase join.UseCase, bot *linebot.Client) *LinebotController {
+	joinUseCase join.UseCase, startTalkUseCase start_talk.UseCase, bot *linebot.Client) *LinebotController {
 
 	return &LinebotController{
-		joinUseCase: joinUseCase,
-		bot:         bot,
+		joinUseCase:      joinUseCase,
+		startTalkUseCase: startTalkUseCase,
+		bot:              bot,
 	}
 }
 
@@ -77,6 +80,14 @@ func (c *LinebotController) handleText(message *linebot.TextMessage, replyToken 
 			GroupRoomType: string(source.Type),
 		}
 		c.joinUseCase.Excute(input)
+	case "トークスタート":
+		input := start_talk.Input{
+			ReplyToken:    replyToken,
+			MemberID:      source.UserID,
+			GroupRoomID:   groupRoomID,
+			GroupRoomType: string(source.Type),
+		}
+		c.startTalkUseCase.Excute(input)
 	case "テスト":
 		replyMessage := "テストメッセージ：" + message.Text
 		if _, err := c.bot.ReplyMessage(replyToken, linebot.NewTextMessage(replyMessage)).Do(); err != nil {
