@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 services:
   # LINEbot
   bot:
@@ -17,7 +17,7 @@ services:
       - ../:/go/src/github.com/go-server-dev
     working_dir: /go/src/github.com/go-server-dev
   # DB
-  mysql:
+  db:
     image: mysql:5.7.32
     ports:
       - "3306:3306"
