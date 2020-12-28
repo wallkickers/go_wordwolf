@@ -12,9 +12,10 @@ import (
 	"github.com/go-server-dev/src/app/interface_adapter"
 	"github.com/go-server-dev/src/app/mocks"
 	join "github.com/go-server-dev/src/app/usecase/join/impl"
+	startTalk "github.com/go-server-dev/src/app/usecase/start_talk/impl"
 	"github.com/joho/godotenv"
-	"github.com/sirupsen/logrus"
 	"github.com/line/line-bot-sdk-go/linebot"
+	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/mock"
 )
 
@@ -96,7 +97,7 @@ func main() {
 	// LINEBotをNew
 	linebot := newLineBot()
 
-	// ゲーム参加UseCase
+	// 参加UseCase
 	dummyMember := domain.NewMember("1", "テスト太郎")
 	dummyGameMaster := domain.NewGameMaster("123", domain.GroupRoomType("group"))
 	readOnlyRepositoryMock := new(mocks.ReadOnlyRepository)
@@ -107,8 +108,12 @@ func main() {
 	joinPresenter := interface_adapter.NewLineBotJoinPresenter(linebot)
 	joinUseCase := join.NewUseCaseImpl(gameMasterRepositoryMock, readOnlyRepositoryMock, joinPresenter)
 
+	// トークスタートUseCase
+	startTalkPresenter := interface_adapter.NewLineBotStartTalkPresenter(linebot)
+	startTalkUseCase := startTalk.NewUseCaseImpl(readOnlyRepositoryMock, startTalkPresenter)
+
 	// Controller
-	controller := interface_adapter.NewLinebotController(joinUseCase, linebot)
+	controller := interface_adapter.NewLinebotController(joinUseCase, startTalkUseCase, linebot)
 
 	// Router
 	router := infrastructure.Router{}
@@ -116,7 +121,7 @@ func main() {
 	router.Init()
 
 	port, _ := strconv.Atoi(os.Args[1])
-	http.HandleFunc("/", handler)             // / にリクエストが来た時はhandlerを呼ぶ。→ Hello world
+	http.HandleFunc("/", handler) // / にリクエストが来た時はhandlerを呼ぶ。→ Hello world
 	fmt.Printf("Starting server at Port %d", port)
 	http.ListenAndServe(fmt.Sprintf(":%d", port), nil)
 }

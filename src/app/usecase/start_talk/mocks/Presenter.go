@@ -3,7 +3,7 @@
 package mocks
 
 import (
-	join "github.com/go-server-dev/src/app/usecase/start_talk"
+	start_talk "github.com/go-server-dev/src/app/usecase/start_talk"
 	mock "github.com/stretchr/testify/mock"
 )
 

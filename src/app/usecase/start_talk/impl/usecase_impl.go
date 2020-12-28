@@ -2,15 +2,13 @@
 package impl
 
 import (
-	"github.com/go-server-dev/src/app/usecase/repository"
 	"github.com/go-server-dev/src/app/usecase/start_talk"
 )
 
 // UseCaseImpl ユースケース実装
 type UseCaseImpl struct {
-	gameMasterRepository repository.GameMasterRepository
-	readOnlyRepository   join.ReadOnlyRepository
-	presenter            join.Presenter
+	readOnlyRepository start_talk.ReadOnlyRepository
+	presenter          start_talk.Presenter
 }
 
 // インターフェースを満たしているかのチェック
@@ -18,18 +16,16 @@ var _ start_talk.UseCase = (*UseCaseImpl)(nil)
 
 // NewUseCaseImpl ゲーム参加ユースケースインスタンスを新規作成する
 func NewUseCaseImpl(
-	gameMasterRepository repository.GameMasterRepository,
-	readOnlyRepository join.ReadOnlyRepository,
-	presenter join.Presenter) *UseCaseImpl {
+	readOnlyRepository start_talk.ReadOnlyRepository,
+	presenter start_talk.Presenter) *UseCaseImpl {
 	return &UseCaseImpl{
-		gameMasterRepository: gameMasterRepository,
-		readOnlyRepository:   readOnlyRepository,
-		presenter:            presenter,
+		readOnlyRepository: readOnlyRepository,
+		presenter:          presenter,
 	}
 }
 
 // Excute ゲームに参加する
-func (j *UseCaseImpl) Excute(input start_talk.Input) join.Output {
+func (j *UseCaseImpl) Excute(input start_talk.Input) start_talk.Output {
 
 	//出力DTO作成
 	output := start_talk.Output{
@@ -47,14 +43,12 @@ func (j *UseCaseImpl) Excute(input start_talk.Input) join.Output {
 		return output
 	}
 
-	// 参加メンバーを追加
-	talkTime = gameMaster.TalkTimeMin()
-	gamemaster.SetEndTime(nowTime.add)
-	if err = j.gameMasterRepository.Save(gameMaster); err != nil {
-		output.Err = err
-		j.presenter.Execute(output)
-		return output
-	}
+	// トーク時間を返却
+	talkTime := gameMaster.TalkTimeMin()
+	output.TalkTimeMin = talkTime
+
+	// TODO：ゲーム状態を保存する必要がある
+	// TODO：タイマーをセットする必要がある
 
 	// 出力
 	output.Err = nil

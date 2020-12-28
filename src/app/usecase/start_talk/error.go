@@ -1,10 +1,10 @@
-package join
+package start_talk
 
 import (
 	"errors"
 )
 
 var (
-	// ErrNotFound 該当オブジェクトが見つからなかった
-	ErrNotFound = errors.New("not found")
+	// ErrAlreadyStarted 既にスタートしている
+	ErrAlreadyStarted = errors.New("is already Started")
 )
