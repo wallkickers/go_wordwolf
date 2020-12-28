@@ -3,7 +3,7 @@
 package mocks
 
 import (
-	join "github.com/go-server-dev/src/app/usecase/join"
+	start_talk "github.com/go-server-dev/src/app/usecase/start_talk"
 	mock "github.com/stretchr/testify/mock"
 )
 
@@ -13,14 +13,14 @@ type UseCase struct {
 }
 
 // Excute provides a mock function with given fields: _a0
-func (_m *UseCase) Excute(_a0 join.Input) join.Output {
+func (_m *UseCase) Excute(_a0 start_talk.Input) start_talk.Output {
 	ret := _m.Called(_a0)
 
-	var r0 join.Output
-	if rf, ok := ret.Get(0).(func(join.Input) join.Output); ok {
+	var r0 start_talk.Output
+	if rf, ok := ret.Get(0).(func(start_talk.Input) start_talk.Output); ok {
 		r0 = rf(_a0)
 	} else {
-		r0 = ret.Get(0).(join.Output)
+		r0 = ret.Get(0).(start_talk.Output)
 	}
 
 	return r0

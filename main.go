@@ -10,7 +10,8 @@ import (
 	"github.com/go-server-dev/src/app/domain"
 	"github.com/go-server-dev/src/app/infrastructure"
 	"github.com/go-server-dev/src/app/interface_adapter"
-	"github.com/go-server-dev/src/app/mocks"
+	"github.com/go-server-dev/src/app/usecase/join/mocks"
+	accept_votes "github.com/go-server-dev/src/app/usecase/accept_votes/impl"
 	join "github.com/go-server-dev/src/app/usecase/join/impl"
 	startTalk "github.com/go-server-dev/src/app/usecase/start_talk/impl"
 	"github.com/joho/godotenv"
@@ -112,8 +113,17 @@ func main() {
 	startTalkPresenter := interface_adapter.NewLineBotStartTalkPresenter(linebot)
 	startTalkUseCase := startTalk.NewUseCaseImpl(readOnlyRepositoryMock, startTalkPresenter)
 
+	// 投票受付UseCase
+	acceptVotesPresenter := interface_adapter.NewLineBotAcceptVotesPresenter(linebot)
+	acceptVotesUseCase := accept_votes.NewUseCaseImpl(gameMasterRepositoryMock, readOnlyRepositoryMock, acceptVotesPresenter)
+
 	// Controller
-	controller := interface_adapter.NewLinebotController(joinUseCase, startTalkUseCase, linebot)
+	controller := interface_adapter.NewLinebotController(
+		joinUseCase,
+		startTalkUseCase,
+		acceptVotesUseCase,
+		linebot,
+	)
 
 	// Router
 	router := infrastructure.Router{}

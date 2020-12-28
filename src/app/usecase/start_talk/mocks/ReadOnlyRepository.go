@@ -4,7 +4,6 @@ package mocks
 
 import (
 	domain "github.com/go-server-dev/src/app/domain"
-
 	mock "github.com/stretchr/testify/mock"
 )
 
