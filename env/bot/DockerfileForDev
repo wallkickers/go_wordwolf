@@ -24,4 +24,4 @@ RUN curl -L https://github.com/golang-migrate/migrate/releases/download/v4.11.0/
 RUN mv ./migrate.linux-amd64 /usr/bin/migrate
 
 # godotenvインストール
-go get github.com/joho/godotenv
+RUN go get github.com/joho/godotenv
