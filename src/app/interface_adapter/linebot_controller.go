@@ -6,26 +6,27 @@ import (
 
 	"github.com/go-server-dev/src/app/usecase/accept_votes"
 	"github.com/go-server-dev/src/app/usecase/join"
+	"github.com/go-server-dev/src/app/usecase/start_talk"
 	"github.com/line/line-bot-sdk-go/linebot"
 )
 
 // LinebotController LINEBOTコントローラ
 type LinebotController struct {
+	joinUseCase        join.UseCase         // ゲームに参加する
+	startTalkUseCase   start_talk.UseCase   // トークを開始する
 	acceptVotesUseCase accept_votes.UseCase // 投票を受け付ける
-	joinUseCase join.UseCase // ゲームに参加する
-	bot         *linebot.Client
+	bot                *linebot.Client
 }
 
 // NewLinebotController コンストラクタ
 func NewLinebotController(
-	acceptVotesUseCase accept_votes.UseCase,
-	joinUseCase join.UseCase,
-	bot *linebot.Client,
-	) *LinebotController {
+	joinUseCase join.UseCase, startTalkUseCase start_talk.UseCase, acceptVotesUseCase accept_votes.UseCase, bot *linebot.Client) *LinebotController {
+
 	return &LinebotController{
+		joinUseCase:        joinUseCase,
+		startTalkUseCase:   startTalkUseCase,
 		acceptVotesUseCase: acceptVotesUseCase,
-		joinUseCase: joinUseCase,
-		bot:         bot,
+		bot:                bot,
 	}
 }
 
@@ -82,6 +83,14 @@ func (c *LinebotController) handleText(message *linebot.TextMessage, replyToken 
 			GroupRoomType: string(source.Type),
 		}
 		c.joinUseCase.Excute(input)
+	case "トークスタート":
+		input := start_talk.Input{
+			ReplyToken:    replyToken,
+			MemberID:      source.UserID,
+			GroupRoomID:   groupRoomID,
+			GroupRoomType: string(source.Type),
+		}
+		c.startTalkUseCase.Excute(input)
 	case "投票":
 		input := accept_votes.Input{
 			ReplyToken:    replyToken,
