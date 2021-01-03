@@ -34,7 +34,7 @@ func TestExecute_accept_votes_withInput_success(t *testing.T) {
 	gameMasterRepositoryMock.On("Save", dummyGameMaster).Return(nil)
 	// プレゼンターMock
 	presenterMock := new(mocks.Presenter)
-	presenterMock.On("Execute", dummyOutput)
+	presenterMock.On("Execute", dummyOutput).Return(nil)
 	// mockの注入
 	acceptVotesUseCase := UseCaseImpl{
 		gameMasterRepository: gameMasterRepositoryMock,

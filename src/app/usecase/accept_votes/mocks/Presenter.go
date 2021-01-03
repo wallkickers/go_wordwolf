@@ -3,7 +3,7 @@
 package mocks
 
 import (
-	join "github.com/go-server-dev/src/app/usecase/join"
+	accept_votes "github.com/go-server-dev/src/app/usecase/accept_votes"
 	mock "github.com/stretchr/testify/mock"
 )
 
@@ -13,11 +13,11 @@ type Presenter struct {
 }
 
 // Execute provides a mock function with given fields: _a0
-func (_m *Presenter) Execute(_a0 join.Output) error {
+func (_m *Presenter) Execute(_a0 accept_votes.Output) error {
 	ret := _m.Called(_a0)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(join.Output) error); ok {
+	if rf, ok := ret.Get(0).(func(accept_votes.Output) error); ok {
 		r0 = rf(_a0)
 	} else {
 		r0 = ret.Error(0)
