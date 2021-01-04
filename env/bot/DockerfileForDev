@@ -25,3 +25,9 @@ RUN mv ./migrate.linux-amd64 /usr/bin/migrate
 
 # godotenvインストール
 RUN go get github.com/joho/godotenv
+
+# mongodbドライバーのインストール
+RUN go get -u "go.mongodb.org/mongo-driver/mongo"
+
+# DIライブラリ wireのインストール
+RUN go get github.com/google/wire/cmd/wire
