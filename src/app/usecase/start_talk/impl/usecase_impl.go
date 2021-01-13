@@ -43,11 +43,13 @@ func (j *UseCaseImpl) Excute(input start_talk.Input) start_talk.Output {
 		return output
 	}
 
+	// 状態をトークフェーズに設定
+	gameMaster.StartTalk()
+
 	// トーク時間を返却
 	talkTime := gameMaster.TalkTimeMin()
 	output.TalkTimeMin = talkTime
 
-	// TODO：ゲーム状態を保存する必要がある
 	// TODO：タイマーをセットする必要がある
 
 	// 出力
