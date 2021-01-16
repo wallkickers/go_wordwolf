@@ -43,6 +43,13 @@ func (j *UseCaseImpl) Excute(input start_talk.Input) start_talk.Output {
 		return output
 	}
 
+	// 既にトーク中の場合、「トーク中」エラー返却
+	if gameMaster.IsTalkTime() {
+		output.Err = start_talk.ErrAlreadyStarted
+		j.presenter.Execute(output)
+		return output
+	}
+
 	// 状態をトークフェーズに設定
 	gameMaster.StartTalk()
 
