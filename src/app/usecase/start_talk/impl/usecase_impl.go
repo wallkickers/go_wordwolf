@@ -3,6 +3,7 @@ package impl
 
 import (
 	"github.com/go-server-dev/src/app/usecase/start_talk"
+	"time"
 )
 
 // UseCaseImpl ユースケース実装
@@ -57,10 +58,27 @@ func (j *UseCaseImpl) Excute(input start_talk.Input) start_talk.Output {
 	talkTime := gameMaster.TalkTimeMin()
 	output.TalkTimeMin = talkTime
 
-	// TODO：タイマーをセットする必要がある
+	// タイマーをセット
+	// TODO：LINEグループ数によってインスタンスが増大するのが課題
+	// ->対応案：送信日時をDBに保存してバッチ処理にするなど対策する必要がある
+	// TODO：トーク時間を延長・終了した場合の処理を考慮する必要がある
+	go setFinishTimer(j, input, talkTime)
 
 	// 出力
 	output.Err = nil
 	j.presenter.Execute(output)
 	return output
+}
+
+func setFinishTimer(j *UseCaseImpl, input start_talk.Input, duration time.Duration) {
+	finishTalkOutput := start_talk.FinishTalkOutput{
+		GroupRoomID:   input.GroupRoomID,
+		GroupRoomType: input.GroupRoomType,
+		ReplyToken:    input.ReplyToken,
+		Err:           nil,
+	}
+	// 一定時間後終了後、通知告知する
+	timer := time.NewTimer(duration)
+	<-timer.C
+	j.presenter.FinishTalk(finishTalkOutput)
 }
