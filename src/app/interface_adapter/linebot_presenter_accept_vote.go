@@ -38,8 +38,7 @@ func (p *LineBotAcceptVotesPresenter) Execute(output accept_votes.Output) error 
 	}
 
 	replyMessage := "投票を受け付けました。"
-	if _, err := p.bot.ReplyMessage(output.ReplyToken, linebot.NewTextMessage(replyMessage)).Do();
-	err != nil {
+	if _, err := p.bot.ReplyMessage(output.ReplyToken, linebot.NewTextMessage(replyMessage)).Do(); err != nil {
 		return err
 	}
 	return nil
