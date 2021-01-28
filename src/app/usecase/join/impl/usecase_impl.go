@@ -60,7 +60,7 @@ func (j *UseCaseImpl) Excute(input join.Input) join.Output {
 
 	// 参加メンバーを追加
 	gameMaster.SetMember(member.ID())
-	if err = j.gameMasterRepository.Save(gameMaster); err != nil {
+	if _, err = j.gameMasterRepository.Save(gameMaster); err != nil {
 		output.Err = err
 		j.presenter.Execute(output)
 		return output

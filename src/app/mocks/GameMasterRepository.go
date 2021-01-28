@@ -13,7 +13,35 @@ type GameMasterRepository struct {
 }
 
 // Save provides a mock function with given fields: _a0
-func (_m *GameMasterRepository) Save(_a0 *domain.GameMaster) error {
+func (_m *GameMasterRepository) Save(_a0 *domain.GameMaster) (bool, error) {
+	ret := _m.Called(_a0)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(*domain.GameMaster) error); ok {
+		r0 = rf(_a0)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return true, r0
+}
+
+// Save provides a mock function with given fields: _a0
+func (_m *GameMasterRepository) GetLimitTime(_a0 *domain.GameMaster) error {
+	ret := _m.Called(_a0)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(*domain.GameMaster) error); ok {
+		r0 = rf(_a0)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// Save provides a mock function with given fields: _a0
+func (_m *GameMasterRepository) StartToMesureTime(_a0 *domain.GameMaster) error {
 	ret := _m.Called(_a0)
 
 	var r0 error
