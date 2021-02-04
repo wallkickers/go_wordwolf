@@ -111,7 +111,7 @@ func main() {
 
 	// トークスタートUseCase
 	startTalkPresenter := interface_adapter.NewLineBotStartTalkPresenter(linebot)
-	startTalkUseCase := startTalk.NewUseCaseImpl(readOnlyRepositoryMock, startTalkPresenter)
+	startTalkUseCase := startTalk.NewUseCaseImpl(gameMasterRepositoryMock, readOnlyRepositoryMock, startTalkPresenter)
 
 	// 投票受付UseCase
 	acceptVotesPresenter := interface_adapter.NewLineBotAcceptVotesPresenter(linebot)

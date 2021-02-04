@@ -86,8 +86,21 @@ func setFinishTimer(j *UseCaseImpl, input start_talk.Input, duration time.Durati
 		GroupRoomID:   input.GroupRoomID,
 		GroupRoomType: input.GroupRoomType,
 		ReplyToken:    input.ReplyToken,
+		Err:           nil,
 	}
 	timer := time.NewTimer(duration)
 	<-timer.C
+	gameMaster, err := j.readOnlyRepository.FindGameMasterByGroupID(input.GroupRoomID)
+	if err != nil {
+		finishTalkOutput.Err = err
+		j.presenter.FinishTalk(finishTalkOutput)
+		return
+	}
+	gameMaster.EndTalk()
+	if err := j.gameMasterRepository.Save(gameMaster); err != nil {
+		finishTalkOutput.Err = err
+		j.presenter.FinishTalk(finishTalkOutput)
+		return
+	}
 	j.presenter.FinishTalk(finishTalkOutput)
 }
