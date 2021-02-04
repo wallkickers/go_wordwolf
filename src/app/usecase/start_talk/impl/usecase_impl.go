@@ -70,14 +70,13 @@ func (j *UseCaseImpl) Excute(input start_talk.Input) start_talk.Output {
 	return output
 }
 
+// setFinishTimer 一定時間後、終了告知する
 func setFinishTimer(j *UseCaseImpl, input start_talk.Input, duration time.Duration) {
 	finishTalkOutput := start_talk.FinishTalkOutput{
 		GroupRoomID:   input.GroupRoomID,
 		GroupRoomType: input.GroupRoomType,
 		ReplyToken:    input.ReplyToken,
-		Err:           nil,
 	}
-	// 一定時間後終了後、通知告知する
 	timer := time.NewTimer(duration)
 	<-timer.C
 	j.presenter.FinishTalk(finishTalkOutput)

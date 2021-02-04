@@ -17,5 +17,4 @@ type FinishTalkOutput struct {
 	ReplyToken    string
 	GroupRoomID   string
 	GroupRoomType string
-	Err           error
 }
