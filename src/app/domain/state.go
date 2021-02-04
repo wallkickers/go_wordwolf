@@ -3,13 +3,13 @@ package domain
 /*
 状態管理
 
-PrepareTime（設定時間）
+SettingTime（設定フェーズ）
 ↓
-TalkTime（トーク時間）
+TalkTime（トークフェーズ）
 ↓↑
-VoteTime（投票時間）
+VoteTime（投票フェーズ）
 ↓
-ResultTime（結果時間）
+ResultTime（結果フェーズ）
 ↓
 */
 
@@ -17,15 +17,20 @@ ResultTime（結果時間）
 type State string
 
 const (
-	prepareTime = State("prepareTime")
+	settingTime = State("settingTime")
 	talkTime    = State("talkTime")
 	voteTime    = State("voteTime")
-	resultTime  = State("tesultTime")
+	resultTime  = State("resultTime")
 )
 
 // StartTalk トーク開始
 func (g *GameMaster) StartTalk() {
 	g.state = talkTime
+}
+
+// EndTalk トーク終了
+func (g *GameMaster) EndTalk() {
+	g.state = voteTime
 }
 
 // IsTalkTime トークタイム
