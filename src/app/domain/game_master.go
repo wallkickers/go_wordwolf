@@ -41,7 +41,7 @@ func NewGameMaster(groupRoomID string, groupRoomType GroupRoomType) *GameMaster 
 		memberList:      map[string]bool{},
 		themeManagement: map[string]string{},
 		voteManagement:  map[string]string{},
-		talkTimeMin:     time.Minute * 3, //3分間
+		talkTimeMin:     time.Minute * 1, //1分間
 		state:           settingTime,     //設定フェーズ
 	}
 }
