@@ -2,14 +2,16 @@
 package impl
 
 import (
+	"github.com/go-server-dev/src/app/usecase/repository"
 	"github.com/go-server-dev/src/app/usecase/start_talk"
 	"time"
 )
 
 // UseCaseImpl ユースケース実装
 type UseCaseImpl struct {
-	readOnlyRepository start_talk.ReadOnlyRepository
-	presenter          start_talk.Presenter
+	gameMasterRepository repository.GameMasterRepository
+	readOnlyRepository   start_talk.ReadOnlyRepository
+	presenter            start_talk.Presenter
 }
 
 // インターフェースを満たしているかのチェック
@@ -17,11 +19,14 @@ var _ start_talk.UseCase = (*UseCaseImpl)(nil)
 
 // NewUseCaseImpl ゲーム参加ユースケースインスタンスを新規作成する
 func NewUseCaseImpl(
+	gameMasterRepository repository.GameMasterRepository,
 	readOnlyRepository start_talk.ReadOnlyRepository,
-	presenter start_talk.Presenter) *UseCaseImpl {
+	presenter start_talk.Presenter,
+) *UseCaseImpl {
 	return &UseCaseImpl{
-		readOnlyRepository: readOnlyRepository,
-		presenter:          presenter,
+		gameMasterRepository: gameMasterRepository,
+		readOnlyRepository:   readOnlyRepository,
+		presenter:            presenter,
 	}
 }
 
@@ -53,6 +58,11 @@ func (j *UseCaseImpl) Excute(input start_talk.Input) {
 
 	// 状態をトークフェーズに設定
 	gameMaster.StartTalk()
+	if err = j.gameMasterRepository.Save(gameMaster); err != nil {
+		output.Err = err
+		j.presenter.Execute(output)
+		return
+	}
 
 	// トーク時間を返却
 	talkTime := gameMaster.TalkTimeMin()

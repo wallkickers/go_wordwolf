@@ -30,15 +30,19 @@ func TestExecute_withInput_success(t *testing.T) {
 
 	readOnlyRepositoryMock := new(mocks.ReadOnlyRepository)
 	readOnlyRepositoryMock.On("FindGameMasterByGroupID", dummyInput.GroupRoomID).Return(dummyGameMaster, nil)
+	gameMasterRepositoryMock := new(mocks.GameMasterRepository)
+	gameMasterRepositoryMock.On("Save", dummyGameMaster).Return(nil)
+
 	presenterMock := new(mocks.Presenter)
 	presenterMock.On("Execute", dummyOutput)
-	joinUseCase := NewUseCaseImpl(readOnlyRepositoryMock, presenterMock)
+	joinUseCase := NewUseCaseImpl(gameMasterRepositoryMock, readOnlyRepositoryMock, presenterMock)
 
 	// 実行
 	joinUseCase.Excute(dummyInput)
 
 	// 検証
 	readOnlyRepositoryMock.AssertExpectations(t)
+	gameMasterRepositoryMock.AssertExpectations(t)
 	presenterMock.AssertExpectations(t)
 }
 
@@ -62,9 +66,10 @@ func TestExecute_getGM_fail(t *testing.T) {
 
 	readOnlyRepositoryMock := new(mocks.ReadOnlyRepository)
 	readOnlyRepositoryMock.On("FindGameMasterByGroupID", dummyInput.GroupRoomID).Return(nil, err)
+	gameMasterRepositoryMock := new(mocks.GameMasterRepository)
 	presenterMock := new(mocks.Presenter)
 	presenterMock.On("Execute", dummyOutput)
-	joinUseCase := NewUseCaseImpl(readOnlyRepositoryMock, presenterMock)
+	joinUseCase := NewUseCaseImpl(gameMasterRepositoryMock, readOnlyRepositoryMock, presenterMock)
 
 	// 実行
 	joinUseCase.Excute(dummyInput)
@@ -96,9 +101,10 @@ func TestExecute_alreadyStart_fail(t *testing.T) {
 
 	readOnlyRepositoryMock := new(mocks.ReadOnlyRepository)
 	readOnlyRepositoryMock.On("FindGameMasterByGroupID", dummyInput.GroupRoomID).Return(dummyGameMaster, nil)
+	gameMasterRepositoryMock := new(mocks.GameMasterRepository)
 	presenterMock := new(mocks.Presenter)
 	presenterMock.On("Execute", dummyOutput)
-	joinUseCase := NewUseCaseImpl(readOnlyRepositoryMock, presenterMock)
+	joinUseCase := NewUseCaseImpl(gameMasterRepositoryMock, readOnlyRepositoryMock, presenterMock)
 
 	// 実行
 	joinUseCase.Excute(dummyInput)
@@ -124,9 +130,10 @@ func TestSetFinishTimer(t *testing.T) {
 	}
 
 	readOnlyRepositoryMock := new(mocks.ReadOnlyRepository)
+	gameMasterRepositoryMock := new(mocks.GameMasterRepository)
 	presenterMock := new(mocks.Presenter)
 	presenterMock.On("FinishTalk", dummyOutput)
-	joinUseCase := NewUseCaseImpl(readOnlyRepositoryMock, presenterMock)
+	joinUseCase := NewUseCaseImpl(gameMasterRepositoryMock, readOnlyRepositoryMock, presenterMock)
 
 	// 実行
 	setFinishTimer(joinUseCase, dummyInput, time.Second*1)
