@@ -8,7 +8,6 @@ import (
 	"github.com/go-server-dev/src/app/domain"
 	"github.com/go-server-dev/src/app/usecase/start_talk"
 	"github.com/go-server-dev/src/app/usecase/start_talk/mocks"
-	"github.com/stretchr/testify/assert"
 )
 
 // 正常系
@@ -32,17 +31,15 @@ func TestExecute_withInput_success(t *testing.T) {
 	readOnlyRepositoryMock := new(mocks.ReadOnlyRepository)
 	readOnlyRepositoryMock.On("FindGameMasterByGroupID", dummyInput.GroupRoomID).Return(dummyGameMaster, nil)
 	presenterMock := new(mocks.Presenter)
-	presenterMock.On("Execute", dummyOutput).Return(nil)
+	presenterMock.On("Execute", dummyOutput)
 	joinUseCase := NewUseCaseImpl(readOnlyRepositoryMock, presenterMock)
 
 	// 実行
-	expect := dummyOutput
-	actual := joinUseCase.Excute(dummyInput)
+	joinUseCase.Excute(dummyInput)
 
 	// 検証
 	readOnlyRepositoryMock.AssertExpectations(t)
 	presenterMock.AssertExpectations(t)
-	assert.Equal(t, expect, actual, "they should be equal output")
 }
 
 // 異常系
@@ -66,17 +63,15 @@ func TestExecute_getGM_fail(t *testing.T) {
 	readOnlyRepositoryMock := new(mocks.ReadOnlyRepository)
 	readOnlyRepositoryMock.On("FindGameMasterByGroupID", dummyInput.GroupRoomID).Return(nil, err)
 	presenterMock := new(mocks.Presenter)
-	presenterMock.On("Execute", dummyOutput).Return(nil)
+	presenterMock.On("Execute", dummyOutput)
 	joinUseCase := NewUseCaseImpl(readOnlyRepositoryMock, presenterMock)
 
 	// 実行
-	expect := dummyOutput
-	actual := joinUseCase.Excute(dummyInput)
+	joinUseCase.Excute(dummyInput)
 
 	// 検証
 	readOnlyRepositoryMock.AssertExpectations(t)
 	presenterMock.AssertExpectations(t)
-	assert.Equal(t, expect, actual, "they should be equal output")
 }
 
 // 異常系
@@ -102,17 +97,15 @@ func TestExecute_alreadyStart_fail(t *testing.T) {
 	readOnlyRepositoryMock := new(mocks.ReadOnlyRepository)
 	readOnlyRepositoryMock.On("FindGameMasterByGroupID", dummyInput.GroupRoomID).Return(dummyGameMaster, nil)
 	presenterMock := new(mocks.Presenter)
-	presenterMock.On("Execute", dummyOutput).Return(nil)
+	presenterMock.On("Execute", dummyOutput)
 	joinUseCase := NewUseCaseImpl(readOnlyRepositoryMock, presenterMock)
 
 	// 実行
-	expect := dummyOutput
-	actual := joinUseCase.Excute(dummyInput)
+	joinUseCase.Excute(dummyInput)
 
 	// 検証
 	readOnlyRepositoryMock.AssertExpectations(t)
 	presenterMock.AssertExpectations(t)
-	assert.Equal(t, expect, actual, "they should be equal output")
 }
 
 // 正常系
@@ -132,7 +125,7 @@ func TestSetFinishTimer(t *testing.T) {
 
 	readOnlyRepositoryMock := new(mocks.ReadOnlyRepository)
 	presenterMock := new(mocks.Presenter)
-	presenterMock.On("FinishTalk", dummyOutput).Return(nil)
+	presenterMock.On("FinishTalk", dummyOutput)
 	joinUseCase := NewUseCaseImpl(readOnlyRepositoryMock, presenterMock)
 
 	// 実行

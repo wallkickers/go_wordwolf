@@ -26,7 +26,7 @@ func NewUseCaseImpl(
 }
 
 // Excute ゲームに参加する
-func (j *UseCaseImpl) Excute(input start_talk.Input) start_talk.Output {
+func (j *UseCaseImpl) Excute(input start_talk.Input) {
 
 	//出力DTO作成
 	output := start_talk.Output{
@@ -41,14 +41,14 @@ func (j *UseCaseImpl) Excute(input start_talk.Input) start_talk.Output {
 	if err != nil {
 		output.Err = err
 		j.presenter.Execute(output)
-		return output
+		return
 	}
 
 	// 既にトーク中の場合、「トーク中」エラー返却
 	if gameMaster.IsTalkTime() {
 		output.Err = start_talk.ErrAlreadyStarted
 		j.presenter.Execute(output)
-		return output
+		return
 	}
 
 	// 状態をトークフェーズに設定
@@ -65,9 +65,9 @@ func (j *UseCaseImpl) Excute(input start_talk.Input) start_talk.Output {
 	go setFinishTimer(j, input, talkTime)
 
 	// 出力
+	output.TalkTimeMin = talkTime
 	output.Err = nil
 	j.presenter.Execute(output)
-	return output
 }
 
 // setFinishTimer 一定時間後、終了告知する
