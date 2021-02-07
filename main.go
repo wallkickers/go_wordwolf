@@ -11,13 +11,13 @@ import (
 	"github.com/go-server-dev/src/app/infrastructure"
 	"github.com/go-server-dev/src/app/infrastructure/database"
 	"github.com/go-server-dev/src/app/interface_adapter"
-    "github.com/go-server-dev/src/app/mocks"
-	// "github.com/go-server-dev/src/app/usecase/repository"
 	accept_votes "github.com/go-server-dev/src/app/usecase/accept_votes/impl"
 	join "github.com/go-server-dev/src/app/usecase/join/impl"
+	"github.com/go-server-dev/src/app/usecase/join/mocks"
+	startTalk "github.com/go-server-dev/src/app/usecase/start_talk/impl"
 	"github.com/joho/godotenv"
-	"github.com/sirupsen/logrus"
 	"github.com/line/line-bot-sdk-go/linebot"
+	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/mock"
 
 	// mongodbテスト用import
@@ -116,7 +116,7 @@ func main() {
     }
     defer db.Disconnect(context.Background())
 
-	// ゲーム参加UseCase
+	// 参加UseCase
 	dummyMember := domain.NewMember("1", "テスト太郎")
 	dummyGameMaster := domain.NewGameMaster("123", domain.GroupRoomType("group"))
 	readOnlyRepositoryMock := new(mocks.ReadOnlyRepository)
@@ -136,13 +136,19 @@ func main() {
     // 投票受付UseCase
     // gameMasterRepository := new(repository.GameMasterRepository)
     // gameMasterRepository := database.NewUserRepository(db)
+	// トークスタートUseCase
+	startTalkPresenter := interface_adapter.NewLineBotStartTalkPresenter(linebot)
+	startTalkUseCase := startTalk.NewUseCaseImpl(readOnlyRepositoryMock, startTalkPresenter)
+
+	// 投票受付UseCase
 	acceptVotesPresenter := interface_adapter.NewLineBotAcceptVotesPresenter(linebot)
 	acceptVotesUseCase := accept_votes.NewUseCaseImpl(gameMasterRepository, readOnlyRepositoryMock, acceptVotesPresenter)
 
 	// Controller
 	controller := interface_adapter.NewLinebotController(
-		acceptVotesUseCase,
 		joinUseCase,
+		startTalkUseCase,
+		acceptVotesUseCase,
 		linebot,
     )
 
@@ -197,7 +203,7 @@ func main() {
 	router.Init()
 
 	port, _ := strconv.Atoi(os.Args[1])
-	http.HandleFunc("/", handler)             // / にリクエストが来た時はhandlerを呼ぶ。→ Hello world
+	http.HandleFunc("/", handler) // / にリクエストが来た時はhandlerを呼ぶ。→ Hello world
 	fmt.Printf("Starting server at Port %d", port)
 	http.ListenAndServe(fmt.Sprintf(":%d", port), nil)
 }

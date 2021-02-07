@@ -1,4 +1,4 @@
-// Package accept_votes ゲーム参加に関するパッケージ
+// Package impl ユースケース実装
 package impl
 
 import (

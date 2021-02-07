@@ -18,9 +18,9 @@ type GameMaster struct {
 	// 各メンバーの投票先([投票元]投票先)
 	voteManagement map[string]string
 	// ゲームプレイ時間
-	talkTimeMin time.Time
-	// ゲーム終了時刻
-	endTime time.Time
+	talkTimeMin time.Duration
+	// 状態
+	state State
 }
 
 // GroupRoomType グループ・ルームの種別
@@ -41,6 +41,7 @@ func NewGameMaster(groupRoomID string, groupRoomType GroupRoomType) *GameMaster 
 		memberList:      map[string]bool{},
 		themeManagement: map[string]string{},
 		voteManagement:  map[string]string{},
+		talkTimeMin:     time.Minute * 3, //3分間
 	}
 }
 
@@ -90,26 +91,11 @@ func (g *GameMaster) SetVoteManagement(fromMemberID string, toMemberID string) {
 }
 
 // TalkTimeMin ゲームプレイ時間(分)を取得する
-func (g *GameMaster) TalkTimeMin() time.Time {
+func (g *GameMaster) TalkTimeMin() time.Duration {
 	return g.talkTimeMin
 }
 
 // SetTalkTimeMin ゲームプレイ時間(分)を設定する
-func (g *GameMaster) SetTalkTimeMin(talkTimeMin time.Time) {
+func (g *GameMaster) SetTalkTimeMin(talkTimeMin time.Duration) {
 	g.talkTimeMin = talkTimeMin
-}
-
-// EndTime ゲーム終了時刻を取得する
-func (g *GameMaster) EndTime() time.Time {
-	return g.endTime
-}
-
-// SetEndTime ゲーム終了時刻を設定する
-func (g *GameMaster) SetEndTime(endTime time.Time) {
-	g.endTime = endTime
-}
-
-// RemainingTime 現在時刻からゲーム残り時間を取得する
-func (g *GameMaster) RemainingTime(nowTime time.Time) time.Duration {
-	return g.endTime.Sub(nowTime)
 }
