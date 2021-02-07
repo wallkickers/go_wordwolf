@@ -10,10 +10,7 @@ require (
 	github.com/google/wire v0.4.0
 	github.com/jinzhu/gorm v1.9.16
 	github.com/joho/godotenv v1.3.0
-<<<<<<< HEAD
 	github.com/klauspost/compress v1.11.4 // indirect
-=======
->>>>>>> origin
 	github.com/line/line-bot-sdk-go v7.6.0+incompatible
 	github.com/mattn/go-colorable v0.1.8 // indirect
 	github.com/mattn/go-runewidth v0.0.9 // indirect
