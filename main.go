@@ -19,14 +19,7 @@ import (
 	"github.com/line/line-bot-sdk-go/linebot"
 	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/mock"
-
-	// mongodbテスト用import
 	"context" // manage multiple requests
-	// "reflect" // get an object type
-    // "time"
-    // "go.mongodb.org/mongo-driver/bson"
-	// "go.mongodb.org/mongo-driver/mongo"
-	// "go.mongodb.org/mongo-driver/mongo/options"
 )
 
 // TODO: 開発用：httpリクエストが来た時
@@ -105,37 +98,37 @@ func lineHandler(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	// LINEBotをNew
-    linebot := newLineBot()
-    
-    // DB Connect
+	linebot := newLineBot()
+	
+	// DB Connect
 	db, err := infrastructure.Connect()
 	if err != nil {
 		logrus.Infof("Error connecting DB: %v", err)
 		// Heroku用 アプリの起動に合わせてDBが起動できないことがあるので再接続を試みる
 		// db, _ = infrastructure.Connect()
-    }
-    defer db.Disconnect(context.Background())
+	}
+	defer db.Disconnect(context.Background())
 
 	// 参加UseCase
 	dummyMember := domain.NewMember("1", "テスト太郎")
 	dummyGameMaster := domain.NewGameMaster("123", domain.GroupRoomType("group"))
 	readOnlyRepositoryMock := new(mocks.ReadOnlyRepository)
 	readOnlyRepositoryMock.On("FindMemberByID", mock.AnythingOfType("string")).Return(dummyMember, nil)
-    readOnlyRepositoryMock.On("FindGameMasterByGroupID", mock.AnythingOfType("string")).Return(dummyGameMaster, nil)
+	readOnlyRepositoryMock.On("FindGameMasterByGroupID", mock.AnythingOfType("string")).Return(dummyGameMaster, nil)
 	gameMasterRepositoryMock := new(mocks.GameMasterRepository)
 	gameMasterRepositoryMock.On("Save", dummyGameMaster).Return(nil)
 	gameMasterRepositoryMock.On("GetLimitTime", dummyGameMaster).Return(nil)
 	gameMasterRepositoryMock.On("StartToMesureTime", dummyGameMaster).Return(nil)
 
-    joinPresenter := interface_adapter.NewLineBotJoinPresenter(linebot)
-    gameMasterRepository := database.NewGameMasterRepository(db)
+	joinPresenter := interface_adapter.NewLineBotJoinPresenter(linebot)
+	gameMasterRepository := database.NewGameMasterRepository(db)
 
 	// joinUseCase := join.NewUseCaseImpl(gameMasterRepositoryMock, readOnlyRepositoryMock, joinPresenter)
 	joinUseCase := join.NewUseCaseImpl(gameMasterRepository, readOnlyRepositoryMock, joinPresenter)
 
-    // 投票受付UseCase
-    // gameMasterRepository := new(repository.GameMasterRepository)
-    // gameMasterRepository := database.NewUserRepository(db)
+	// 投票受付UseCase
+	// gameMasterRepository := new(repository.GameMasterRepository)
+	// gameMasterRepository := database.NewUserRepository(db)
 	// トークスタートUseCase
 	startTalkPresenter := interface_adapter.NewLineBotStartTalkPresenter(linebot)
 	startTalkUseCase := startTalk.NewUseCaseImpl(readOnlyRepositoryMock, startTalkPresenter)
@@ -150,53 +143,9 @@ func main() {
 		startTalkUseCase,
 		acceptVotesUseCase,
 		linebot,
-    )
+	)
 
-	// // DB Connect
-	// db, err := infrastructure.Connect()
-	// if err != nil {
-	// 	logrus.Infof("Error connecting DB: %v", err)
-	// 	// Heroku用 アプリの起動に合わせてDBが起動できないことがあるので再接続を試みる
-	// 	// db, _ = infrastructure.Connect()
-    // }
-    // defer db.Disconnect(context.Background())
-	// output sql query
-    // db.LogMode(true)
-
-	// Connect to the MongoDB and return Client instance
-	// client, err := mongo.Connect(context.TODO(), clientOptions)
-	// if err != nil {
-	// fmt.Println("mongo.Connect() ERROR:", err)
-	// os.Exit(1)
-	// }
-
-	// Declare Context type object for managing multiple API requests
-	// ctx, _ := context.WithTimeout(context.Background(), 15*time.Second)
-
-	// // Access a MongoDB collection through a database
-	// col := client.Database("wordwolf").Collection("game_master")
-    // fmt.Println("Collection type:", reflect.TypeOf(col), "\n")
-
-	// InsertOne() method Returns mongo.InsertOneResult
-	// result, insertErr := col.InsertOne(ctx, oneDoc)
-	// result, insertErr := col.InsertOne(ctx, bson.D{
-    //     {"title", "The Polyglot Developer Podcast"},
-    //     {"author", "Nic Raboy"},
-    //     {"tags", bson.A{"development", "programming", "coding"}},
-    // })
-	// if insertErr != nil {
-    //     fmt.Println("InsertOne ERROR:", insertErr)
-	//     os.Exit(1) // safely exit script on error
-	// } else {
-	//     fmt.Println("InsertOne() result type: ", reflect.TypeOf(result))
-	//     fmt.Println("InsertOne() API result:", result)
-	
-	// // get the inserted ID string
-	// newID := result.InsertedID
-	// fmt.Println("InsertOne() newID:", newID)
-	// fmt.Println("InsertOne() newID type:", reflect.TypeOf(newID))
-
-	// Router 
+	// Router
 	router := infrastructure.Router{}
 	// router := Initialize(db)
 	router.AddLineBotController(*controller)
