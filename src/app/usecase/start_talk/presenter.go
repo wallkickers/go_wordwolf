@@ -2,5 +2,6 @@ package start_talk
 
 // Presenter 出力インターフェース
 type Presenter interface {
-	Execute(Output) error
+	Execute(Output)
+	FinishTalk(FinishTalkOutput)
 }

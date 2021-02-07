@@ -13,15 +13,6 @@ type UseCase struct {
 }
 
 // Excute provides a mock function with given fields: _a0
-func (_m *UseCase) Excute(_a0 start_talk.Input) start_talk.Output {
-	ret := _m.Called(_a0)
-
-	var r0 start_talk.Output
-	if rf, ok := ret.Get(0).(func(start_talk.Input) start_talk.Output); ok {
-		r0 = rf(_a0)
-	} else {
-		r0 = ret.Get(0).(start_talk.Output)
-	}
-
-	return r0
+func (_m *UseCase) Excute(_a0 start_talk.Input) {
+	_m.Called(_a0)
 }

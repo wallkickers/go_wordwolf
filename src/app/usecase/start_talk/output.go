@@ -11,3 +11,11 @@ type Output struct {
 	TalkTimeMin   time.Duration
 	Err           error
 }
+
+// FinishTalkOutput トーク終了出力DTO
+type FinishTalkOutput struct {
+	ReplyToken    string
+	GroupRoomID   string
+	GroupRoomType string
+	Err           error
+}

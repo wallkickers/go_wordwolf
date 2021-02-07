@@ -2,13 +2,16 @@
 package impl
 
 import (
+	"github.com/go-server-dev/src/app/usecase/repository"
 	"github.com/go-server-dev/src/app/usecase/start_talk"
+	"time"
 )
 
 // UseCaseImpl ユースケース実装
 type UseCaseImpl struct {
-	readOnlyRepository start_talk.ReadOnlyRepository
-	presenter          start_talk.Presenter
+	gameMasterRepository repository.GameMasterRepository
+	readOnlyRepository   start_talk.ReadOnlyRepository
+	presenter            start_talk.Presenter
 }
 
 // インターフェースを満たしているかのチェック
@@ -16,16 +19,19 @@ var _ start_talk.UseCase = (*UseCaseImpl)(nil)
 
 // NewUseCaseImpl ゲーム参加ユースケースインスタンスを新規作成する
 func NewUseCaseImpl(
+	gameMasterRepository repository.GameMasterRepository,
 	readOnlyRepository start_talk.ReadOnlyRepository,
-	presenter start_talk.Presenter) *UseCaseImpl {
+	presenter start_talk.Presenter,
+) *UseCaseImpl {
 	return &UseCaseImpl{
-		readOnlyRepository: readOnlyRepository,
-		presenter:          presenter,
+		gameMasterRepository: gameMasterRepository,
+		readOnlyRepository:   readOnlyRepository,
+		presenter:            presenter,
 	}
 }
 
 // Excute ゲームに参加する
-func (j *UseCaseImpl) Excute(input start_talk.Input) start_talk.Output {
+func (j *UseCaseImpl) Excute(input start_talk.Input) {
 
 	//出力DTO作成
 	output := start_talk.Output{
@@ -40,18 +46,61 @@ func (j *UseCaseImpl) Excute(input start_talk.Input) start_talk.Output {
 	if err != nil {
 		output.Err = err
 		j.presenter.Execute(output)
-		return output
+		return
+	}
+
+	// 既にトーク中の場合、「トーク中」エラー返却
+	if gameMaster.IsTalkTime() {
+		output.Err = start_talk.ErrAlreadyStarted
+		j.presenter.Execute(output)
+		return
+	}
+
+	// 状態をトークフェーズに設定
+	gameMaster.StartTalk()
+	if err = j.gameMasterRepository.Save(gameMaster); err != nil {
+		output.Err = err
+		j.presenter.Execute(output)
+		return
 	}
 
 	// トーク時間を返却
 	talkTime := gameMaster.TalkTimeMin()
 	output.TalkTimeMin = talkTime
 
-	// TODO：ゲーム状態を保存する必要がある
-	// TODO：タイマーをセットする必要がある
+	// タイマーをセット
+	// TODO：LINEグループ数によってインスタンスが増大するのが課題
+	// ->対応案：送信日時をDBに保存してバッチ処理にするなど対策する必要がある
+	// TODO：トーク時間を延長・終了した場合の処理を考慮する必要がある
+	go setFinishTimer(j, input, talkTime)
 
 	// 出力
+	output.TalkTimeMin = talkTime
 	output.Err = nil
 	j.presenter.Execute(output)
-	return output
+}
+
+// setFinishTimer 一定時間後、終了告知する
+func setFinishTimer(j *UseCaseImpl, input start_talk.Input, duration time.Duration) {
+	finishTalkOutput := start_talk.FinishTalkOutput{
+		GroupRoomID:   input.GroupRoomID,
+		GroupRoomType: input.GroupRoomType,
+		ReplyToken:    input.ReplyToken,
+		Err:           nil,
+	}
+	timer := time.NewTimer(duration)
+	<-timer.C
+	gameMaster, err := j.readOnlyRepository.FindGameMasterByGroupID(input.GroupRoomID)
+	if err != nil {
+		finishTalkOutput.Err = err
+		j.presenter.FinishTalk(finishTalkOutput)
+		return
+	}
+	gameMaster.EndTalk()
+	if err := j.gameMasterRepository.Save(gameMaster); err != nil {
+		finishTalkOutput.Err = err
+		j.presenter.FinishTalk(finishTalkOutput)
+		return
+	}
+	j.presenter.FinishTalk(finishTalkOutput)
 }

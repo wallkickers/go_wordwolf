@@ -28,9 +28,9 @@ type GroupRoomType string
 
 const (
 	//Group 種別がグループ（）
-	group = GroupRoomType("group")
+	Group = GroupRoomType("group")
 	//Room 種別がルーム（複数人のトーク）
-	room = GroupRoomType("room")
+	Room = GroupRoomType("room")
 )
 
 // NewGameMaster ゲーム管理者インスタンスを新規作成する
@@ -41,7 +41,8 @@ func NewGameMaster(groupRoomID string, groupRoomType GroupRoomType) *GameMaster 
 		memberList:      map[string]bool{},
 		themeManagement: map[string]string{},
 		voteManagement:  map[string]string{},
-		talkTimeMin:     time.Minute * 3, //3分間
+		talkTimeMin:     time.Minute * 1, //1分間
+		state:           settingTime,     //設定フェーズ
 	}
 }
 
